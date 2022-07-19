@@ -1,13 +1,18 @@
 package com.patronusstudio.BottleFlip
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.patronusstudio.BottleFlip.Authentication.TokenManager
+import com.patronusstudio.BottleFlip.Base.BaseResponse
+import com.patronusstudio.BottleFlip.Model.ErrorResponse
+import com.patronusstudio.BottleFlip.Model.LoginRequest
+import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -19,27 +24,21 @@ class AuthController {
     @Autowired
     private lateinit var tokenManager: TokenManager
 
+    @Autowired
+    private lateinit var passwordEncoder: BCryptPasswordEncoder
+
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<String> {
-        try {
+    fun login(@RequestBody loginRequest: LoginRequest): BaseResponse {
+        return try {
             authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken(
                     loginRequest.username, loginRequest.password
                 )
             )
-            return ResponseEntity.ok(tokenManager.generateToken(loginRequest.username))
+            val token = tokenManager.generateToken(loginRequest.username)
+            SuccesResponse(token, HttpStatus.OK)
         } catch (e: Exception) {
-            throw Exception(e)
+            ErrorResponse(e.localizedMessage, HttpStatus.NOT_ACCEPTABLE)
         }
     }
-
-    @PostMapping("/message")
-    fun showMessage(@RequestParam message: String): ResponseEntity<String> {
-        return ResponseEntity.ok("Hello $message!!\nWelcome to my World!!")
-    }
 }
-
-data class LoginRequest(
-    @JsonProperty("username") val username: String,
-    @JsonProperty("password") val password: String
-)

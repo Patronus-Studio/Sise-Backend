@@ -1,4 +1,4 @@
-package com.patronusstudio.BottleFlip
+package com.patronusstudio.BottleFlip.Authentication
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

@@ -1,4 +1,4 @@
-package com.patronusstudio.BottleFlip
+package com.patronusstudio.BottleFlip.Authentication
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -61,4 +61,6 @@ class TokenManager {
     private fun getClaims(token: String): Claims {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).body
     }
+
+
 }

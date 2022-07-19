@@ -1,6 +1,6 @@
 package com.patronusstudio.BottleFlip.Repository
 
-import com.patronusstudio.BottleFlip.BaseSealed
+import com.patronusstudio.BottleFlip.Base.BaseSealed
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.jdbc.core.JdbcTemplate

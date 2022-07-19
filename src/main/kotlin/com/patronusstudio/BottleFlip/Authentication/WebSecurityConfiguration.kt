@@ -1,4 +1,4 @@
-package com.patronusstudio.BottleFlip
+package com.patronusstudio.BottleFlip.Authentication
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -45,7 +45,7 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 //tüm requestleri auth yapsın
                 .authorizeRequests()
                 //şu adres haricindeki tüm requestlere authentication gerekli
-                .antMatchers("/login")
+                .antMatchers("/login","/message","/register")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

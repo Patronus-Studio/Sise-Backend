@@ -1,4 +1,4 @@
-package com.patronusstudio.BottleFlip
+package com.patronusstudio.BottleFlip.Base
 
 sealed class BaseSealed {
     class Succes(val data: Map<String, Any>) : BaseSealed()
