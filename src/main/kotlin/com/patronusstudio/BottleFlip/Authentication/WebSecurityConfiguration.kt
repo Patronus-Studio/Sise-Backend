@@ -45,7 +45,7 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 //tüm requestleri auth yapsın
                 .authorizeRequests()
                 //şu adres haricindeki tüm requestlere authentication gerekli
-                .antMatchers("/login","/register")
+                .antMatchers("/login","/register","/usernameControl")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

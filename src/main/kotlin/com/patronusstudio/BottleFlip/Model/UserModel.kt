@@ -5,11 +5,11 @@ import com.patronusstudio.BottleFlip.Base.BaseModel
 import java.sql.Date
 
 data class UserModel(
-    @JsonProperty("email") val email: String,
-    @JsonProperty("gender") val gender: String,
-    @JsonProperty("password") val password: String,
-    @JsonProperty("username") val username: String,
-    @JsonProperty("userType") val userType: Int,
-    @JsonProperty("createdTime") val createdTime: Date,
-    @JsonProperty("token") val token: String,
-)
+    @JsonProperty("email") val email: String? = null,
+    @JsonProperty("gender") val gender: String = "0",
+    @JsonProperty("password") val password: String? = null,
+    @JsonProperty("username") val username: String? = null,
+    @JsonProperty("userType") val userType: Int = 0,
+    @JsonProperty("createdTime") val createdTime: Date? = null,
+    @JsonProperty("token") val token: String? = null,
+):BaseModel()
