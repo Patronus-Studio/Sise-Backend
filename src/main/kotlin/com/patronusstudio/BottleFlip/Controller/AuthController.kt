@@ -49,12 +49,7 @@ class AuthController {
     }
 
     @PostMapping("/register")
-    fun register(@RequestBody userModel: UserModel):BaseResponse{
+    fun register(@RequestBody userModel: UserModel): BaseResponse {
         return userDetailsService.register(userModel)
-    }
-
-    @PostMapping("/sampleSql")
-    fun sampleSql(){
-        return userDetailsService.createSampleSql()
     }
 }
