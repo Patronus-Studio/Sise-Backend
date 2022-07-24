@@ -6,6 +6,7 @@ import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
 import com.patronusstudio.BottleFlip.Repository.UserRepo
+import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.userdetails.User
@@ -25,9 +26,9 @@ class MyUserDetailsService : UserDetailsService {
 
     override fun loadUserByUsername(username: String?): UserDetails {
         val sql = "SELECT * From users Where username = \"$username\""
-        val res = userRepo.getData<UserModel>(sql,UserModel())
+        val res = userRepo.getData<UserModel>(sql, UserModel())
         return when (res) {
-            is BaseSealed.SuccesWithData -> User(
+            is BaseSealed.Succes -> User(
                 username,
                 passwordEncoder.encode((res.data as UserModel).password.toString()),
                 arrayListOf()
@@ -39,9 +40,9 @@ class MyUserDetailsService : UserDetailsService {
 
     fun usernameControl(username: String?): BaseResponse {
         val sql = "SELECT * FROM users WHERE username = \"$username\""
-        val res = userRepo.getData(sql,UserModel())
+        val res = userRepo.getData(sql, UserModel())
         return when (res) {
-            is BaseSealed.SuccesWithData -> ErrorResponse(
+            is BaseSealed.Succes -> ErrorResponse(
                 "Bu kullanıcı adı kullanılmaktadır.",
                 HttpStatus.NOT_ACCEPTABLE
             )
@@ -52,9 +53,9 @@ class MyUserDetailsService : UserDetailsService {
 
     fun emailControl(email: String?): BaseResponse {
         val sql = "SELECT * FROM users WHERE email = \"$email\""
-        val res = userRepo.getData(sql,UserModel())
+        val res = userRepo.getData(sql, UserModel())
         return when (res) {
-            is BaseSealed.SuccesWithData -> ErrorResponse(
+            is BaseSealed.Succes -> ErrorResponse(
                 "Bu email kullanılmaktadır.",
                 HttpStatus.NOT_ACCEPTABLE
             )
@@ -64,24 +65,50 @@ class MyUserDetailsService : UserDetailsService {
     }
 
     fun register(userModel: UserModel): BaseResponse {
-        val usernameResponse = usernameControl(userModel.username)
-        val emailResponse = emailControl(userModel.email)
-        return if (emailResponse is SuccesResponse && usernameResponse is SuccesResponse) {
-            val sql = "INSERT INTO users(email,gender,password,username,userType,token) VALUES(" +
-                    "\"${userModel.email}\",\"${userModel.gender}\",\"${userModel.password}\"," +
-                    "\"${userModel.username}\",\"${userModel.userType}\",\"${userModel.token}}\")"
-            val res = userRepo.setData(sql)
-            when (res) {
-                is BaseSealed.SuccesWithNoData -> SuccesResponse(
-                    status = HttpStatus.OK,
-                    message = "Kayıt başarılı."
+        val est = userRepo.setData(CreateTableSqlEnum.USER.getCreateSql())
+        return if (est is BaseSealed.Succes) {
+            val usernameResponse = usernameControl(userModel.username)
+            val emailResponse = emailControl(userModel.email)
+            if (emailResponse is SuccesResponse && usernameResponse is SuccesResponse) {
+                val insertSql = CreateTableSqlEnum.USER.getInsertSql(
+                    userModel.username!!, userModel.email!!, userModel.gender,
+                    userModel.password!!, userModel.userType, userModel.token ?: ""
                 )
-                is BaseSealed.Error -> ErrorResponse("HATA.", HttpStatus.NOT_ACCEPTABLE)
-                else -> ErrorResponse("HATA ELSE.", HttpStatus.NOT_ACCEPTABLE)
-            }
-        } else if (emailResponse is ErrorResponse && usernameResponse is SuccesResponse) emailResponse
-        else if (emailResponse is SuccesResponse && usernameResponse is ErrorResponse) usernameResponse
-        else ErrorResponse("Kullanıcı adı ve email adresi kullanılmaktadır.", HttpStatus.NOT_ACCEPTABLE)
+                val res = userRepo.setData(insertSql)
+                if (res is BaseSealed.Succes) {
+                    userGameInfoSetData(userModel.username)
+                    SuccesResponse(status = HttpStatus.OK, message = "Kayıt başarılı.")
+                } else {
+                    ErrorResponse("HATA.", HttpStatus.NOT_ACCEPTABLE)
+                }
+            } else if (emailResponse is ErrorResponse && usernameResponse is SuccesResponse) emailResponse
+            else if (emailResponse is SuccesResponse && usernameResponse is ErrorResponse) usernameResponse
+            else ErrorResponse("Kullanıcı adı ve email adresi kullanılmaktadır.", HttpStatus.NOT_ACCEPTABLE)
+        } else {
+            ErrorResponse(CreateTableSqlEnum.USER.createTableErrorMessage(), HttpStatus.NOT_ACCEPTABLE)
+        }
     }
     //TODO REFRESH TOKEN EKLENECEK
+
+
+    private fun userGameInfoSetData(username: String): BaseResponse {
+        val tableCreateSql = CreateTableSqlEnum.USER_GAME_INFO.getCreateSql()
+        val result = userRepo.setData(tableCreateSql)
+        return if (result is BaseSealed.Succes) {
+            val tableInsertSql = CreateTableSqlEnum.USER_GAME_INFO.getInsertSql(username)
+            val insertDataResult = userRepo.setData(tableInsertSql)
+            if (insertDataResult is BaseSealed.Succes)
+                return SuccesResponse(status = HttpStatus.OK, message = null)
+            else ErrorResponse(
+                CreateTableSqlEnum.USER_GAME_INFO.insertDataErrorMessage(), HttpStatus.NOT_ACCEPTABLE
+            )
+        } else ErrorResponse(
+            CreateTableSqlEnum.USER_GAME_INFO.createTableErrorMessage(), HttpStatus.NOT_ACCEPTABLE
+        )
+    }
+
+    fun createSampleSql() {
+        userGameInfoSetData("iamcodder")
+        userGameInfoSetData("ia123mcodder")
+    }
 }

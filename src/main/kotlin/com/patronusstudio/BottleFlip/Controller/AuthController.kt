@@ -1,6 +1,5 @@
 package com.patronusstudio.BottleFlip
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.patronusstudio.BottleFlip.Authentication.MyUserDetailsService
 import com.patronusstudio.BottleFlip.Authentication.TokenManager
 import com.patronusstudio.BottleFlip.Base.BaseResponse
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
@@ -54,5 +51,10 @@ class AuthController {
     @PostMapping("/register")
     fun register(@RequestBody userModel: UserModel):BaseResponse{
         return userDetailsService.register(userModel)
+    }
+
+    @PostMapping("/sampleSql")
+    fun sampleSql(){
+        return userDetailsService.createSampleSql()
     }
 }
