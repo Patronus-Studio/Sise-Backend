@@ -34,7 +34,6 @@ class MyUserDetailsService : UserDetailsService {
                 arrayListOf()
             )
             is BaseSealed.Error -> throw Exception("No user found")
-            else -> throw Exception("No user found")
         }
     }
 
@@ -47,7 +46,6 @@ class MyUserDetailsService : UserDetailsService {
                 HttpStatus.NOT_ACCEPTABLE
             )
             is BaseSealed.Error -> SuccesResponse(status = HttpStatus.OK, message = null)
-            else -> ErrorResponse("Bu kullanıcı adı kullanılmaktadır.", HttpStatus.NOT_ACCEPTABLE)
         }
     }
 
@@ -60,7 +58,6 @@ class MyUserDetailsService : UserDetailsService {
                 HttpStatus.NOT_ACCEPTABLE
             )
             is BaseSealed.Error -> SuccesResponse(status = HttpStatus.OK, message = null)
-            else -> ErrorResponse("Bu email kullanılmaktadır.", HttpStatus.NOT_ACCEPTABLE)
         }
     }
 
@@ -88,8 +85,6 @@ class MyUserDetailsService : UserDetailsService {
             ErrorResponse(CreateTableSqlEnum.USER.createTableErrorMessage(), HttpStatus.NOT_ACCEPTABLE)
         }
     }
-    //TODO REFRESH TOKEN EKLENECEK
-
 
     private fun userGameInfoSetData(username: String): BaseResponse {
         val tableCreateSql = CreateTableSqlEnum.USER_GAME_INFO.getCreateSql()

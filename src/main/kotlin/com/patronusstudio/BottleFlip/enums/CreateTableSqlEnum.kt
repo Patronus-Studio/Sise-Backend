@@ -49,6 +49,43 @@ enum class CreateTableSqlEnum {
             return "Verileriniz kaydedilirken bir hatayla karşılaşıldı. Ekibimiz şuan hatayı incelemektedir." +
                     "Lütfen bir süre sonra tekrar deneyin."
         }
+    },
+    PACKAGES {
+        override fun getCreateSql(): String {
+            return "Create Table If Not Exists packages(" +
+                    "id INT AUTO_INCREMENT," +
+                    "username VARCHAR(45) REFERENCES users(username)," +
+                    "name VARCHAR(45)," +
+                    "description VARCHAR(45)," +
+                    "imageUrl VARCHAR(255)," +
+                    "createdTime datetime DEFAULT CURRENT_TIMESTAMP," +
+                    "numberOfLike INT," +
+                    "numberOfUnlike INT," +
+                    "numberOfDownload INT," +
+                    "questions BLOB," +
+                    "version INT," +
+                    "lastUpdatedDate datetime DEFAULT CURRENT_TIMESTAMP," +
+                    "PRIMARY KEY (id))"
+        }
+
+        override fun getInsertSql(vararg data: String): String {
+            return "INSERT INTO packages(" +
+                    "username,name,description,imageUrl,numberOfLike,numberOfUnlike,numberOfDownload," +
+                    "questions,version,lastUpdatedDate) VALUES(" +
+                    "\"${data[0]},\"${data[1]},\"${data[2]},\"${data[3]},\"${data[4]}," +
+                    "\"${data[5]},\"${data[6]},\"${data[7]},\"${data[8]})"
+        }
+
+        override fun createTableErrorMessage(): String {
+            return "Tablo oluşturulurken bir hata oluştu. Ekibimiz şuan hatayı incelemektedir." +
+                    "Lütfen bir süre sonra tekrar deneyin."
+        }
+
+        override fun insertDataErrorMessage(): String {
+            return "Verileriniz kaydedilirken bir hatayla karşılaşıldı. Ekibimiz şuan hatayı incelemektedir." +
+                    "Lütfen bir süre sonra tekrar deneyin."
+        }
+
     };
 
     abstract fun getCreateSql(): String
