@@ -5,7 +5,7 @@ import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
-import com.patronusstudio.BottleFlip.Repository.UserRepo
+import com.patronusstudio.BottleFlip.Repository.SqlRepo
 import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,14 +19,14 @@ import org.springframework.stereotype.Service
 class MyUserDetailsService : UserDetailsService {
 
     @Autowired
-    private lateinit var userRepo: UserRepo
+    private lateinit var sqlRepo: SqlRepo
 
     @Autowired
     private lateinit var passwordEncoder: BCryptPasswordEncoder
 
     override fun loadUserByUsername(username: String?): UserDetails {
         val sql = "SELECT * From users Where username = \"$username\""
-        val res = userRepo.getData<UserModel>(sql, UserModel())
+        val res = sqlRepo.getDataForObject<UserModel>(sql, UserModel())
         return when (res) {
             is BaseSealed.Succes -> User(
                 username,
@@ -39,7 +39,7 @@ class MyUserDetailsService : UserDetailsService {
 
     fun usernameControl(username: String?): BaseResponse {
         val sql = "SELECT * FROM users WHERE username = \"$username\""
-        val res = userRepo.getData(sql, UserModel())
+        val res = sqlRepo.getDataForObject(sql, UserModel())
         return when (res) {
             is BaseSealed.Succes -> ErrorResponse(
                 "Bu kullanıcı adı kullanılmaktadır.",
@@ -51,7 +51,7 @@ class MyUserDetailsService : UserDetailsService {
 
     fun emailControl(email: String?): BaseResponse {
         val sql = "SELECT * FROM users WHERE email = \"$email\""
-        val res = userRepo.getData(sql, UserModel())
+        val res = sqlRepo.getDataForObject(sql, UserModel())
         return when (res) {
             is BaseSealed.Succes -> ErrorResponse(
                 "Bu email kullanılmaktadır.",
@@ -62,7 +62,7 @@ class MyUserDetailsService : UserDetailsService {
     }
 
     fun register(userModel: UserModel): BaseResponse {
-        val est = userRepo.setData(CreateTableSqlEnum.USER.getCreateSql())
+        val est = sqlRepo.setData(CreateTableSqlEnum.USER.getCreateSql())
         return if (est is BaseSealed.Succes) {
             val usernameResponse = usernameControl(userModel.username)
             val emailResponse = emailControl(userModel.email)
@@ -71,7 +71,7 @@ class MyUserDetailsService : UserDetailsService {
                     userModel.username!!, userModel.email!!, userModel.gender,
                     userModel.password!!, userModel.userType, userModel.token ?: ""
                 )
-                val res = userRepo.setData(insertSql)
+                val res = sqlRepo.setData(insertSql)
                 if (res is BaseSealed.Succes) {
                     userGameInfoSetData(userModel.username)
                     SuccesResponse(status = HttpStatus.OK, message = "Kayıt başarılı.")
@@ -88,10 +88,10 @@ class MyUserDetailsService : UserDetailsService {
 
     private fun userGameInfoSetData(username: String): BaseResponse {
         val tableCreateSql = CreateTableSqlEnum.USER_GAME_INFO.getCreateSql()
-        val result = userRepo.setData(tableCreateSql)
+        val result = sqlRepo.setData(tableCreateSql)
         return if (result is BaseSealed.Succes) {
             val tableInsertSql = CreateTableSqlEnum.USER_GAME_INFO.getInsertSql(username)
-            val insertDataResult = userRepo.setData(tableInsertSql)
+            val insertDataResult = sqlRepo.setData(tableInsertSql)
             if (insertDataResult is BaseSealed.Succes)
                 return SuccesResponse(status = HttpStatus.OK, message = null)
             else ErrorResponse(
@@ -102,8 +102,4 @@ class MyUserDetailsService : UserDetailsService {
         )
     }
 
-    fun createSampleSql() {
-        userGameInfoSetData("iamcodder")
-        userGameInfoSetData("ia123mcodder")
-    }
 }

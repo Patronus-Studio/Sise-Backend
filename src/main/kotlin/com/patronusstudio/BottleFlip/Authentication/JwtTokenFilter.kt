@@ -35,7 +35,14 @@ class JwtTokenFilter : OncePerRequestFilter() {
             try {
                 username = tokenManager.getUsernameToken(token)
             } catch (e: Exception) {
-                throw Exception(e.localizedMessage)
+                val sb = StringBuilder()
+                sb.append("{ ")
+                sb.append("\"message\": \"Unauthorized\",")
+                sb.append("\"status\": \"${HttpServletResponse.SC_UNAUTHORIZED}\"")
+                sb.append("} ")
+                response.contentType = "application/json"
+                response.writer.write(sb.toString())
+                return
             }
         }
         //kullanıcı daha önce bu tokenle login olmuş mu?

@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class UserRepo {
+class SqlRepo {
 
     @Autowired
     private lateinit var jdbcConnection: JdbcTemplate
@@ -20,11 +20,22 @@ class UserRepo {
     }
 
 
-    fun <T : BaseModel> getData(sqlQuery: String, classType: T): BaseSealed {
+    fun <T : BaseModel> getDataForObject(sqlQuery: String, classType: T): BaseSealed {
         return try {
             val result = jdbcConnection.queryForMap(sqlQuery)
             val json = mapper.writeValueAsString(result)
             val user = mapper.readValue(json, classType::class.java)
+            BaseSealed.Succes(user)
+        } catch (e: DataAccessException) {
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)))
+        }
+    }
+
+    fun <T : BaseModel> getDataForList(sqlQuery: String, classType: T): BaseSealed {
+        return try {
+            val result = jdbcConnection.queryForList(sqlQuery)
+            val json = mapper.writeValueAsString(result)
+            val user = mapper.readValue(json, List::class.java)
             BaseSealed.Succes(user)
         } catch (e: DataAccessException) {
             BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)))

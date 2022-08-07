@@ -72,8 +72,8 @@ enum class CreateTableSqlEnum {
             return "INSERT INTO packages(" +
                     "username,name,description,imageUrl,numberOfLike,numberOfUnlike,numberOfDownload," +
                     "questions,version,lastUpdatedDate) VALUES(" +
-                    "\"${data[0]},\"${data[1]},\"${data[2]},\"${data[3]},\"${data[4]}," +
-                    "\"${data[5]},\"${data[6]},\"${data[7]},\"${data[8]})"
+                    "\"${data[0]}\",\"${data[1]}\",\"${data[2]}\",\"${data[3]}\",${data[4]}," +
+                    "${data[5]},${data[6]},\"${data[7]}\",${data[8]},\"${data[9]}\")"
         }
 
         override fun createTableErrorMessage(): String {
