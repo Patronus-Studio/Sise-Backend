@@ -19,7 +19,37 @@ class PackageService {
     private lateinit var sqlRepo: SqlRepo
 
     fun getPackagesFromUsername(username: String): BaseResponse {
-        var sql = "Select * From packages Where username = \"$username\""
+        val sql = "Select * From packages Where username = \"$username\""
+        val result = sqlRepo.getDataForList(sql, PackageModel())
+        return if (result is BaseSealed.Succes) {
+            SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
+        } else {
+            ErrorResponse("Paket bulunamadı", HttpStatus.NOT_ACCEPTABLE)
+        }
+    }
+
+    fun getPackagesFromPackageName(packageName:String):BaseResponse{
+        val sql = "Select * From packages Where name = \"$packageName\""
+        val result = sqlRepo.getDataForList(sql, PackageModel())
+        return if (result is BaseSealed.Succes) {
+            SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
+        } else {
+            ErrorResponse("Paket bulunamadı", HttpStatus.NOT_ACCEPTABLE)
+        }
+    }
+
+    fun getPackagesFromMostLike():BaseResponse{
+        val sql = "Select * from packages order by numberOfLike desc"
+        val result = sqlRepo.getDataForList(sql, PackageModel())
+        return if (result is BaseSealed.Succes) {
+            SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
+        } else {
+            ErrorResponse("Paket bulunamadı", HttpStatus.NOT_ACCEPTABLE)
+        }
+    }
+
+    fun getPackagesFromMostDownload():BaseResponse{
+        val sql = "Select * from packages order by numberOfDownload desc"
         val result = sqlRepo.getDataForList(sql, PackageModel())
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)

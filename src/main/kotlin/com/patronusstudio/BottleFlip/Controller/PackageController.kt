@@ -18,8 +18,22 @@ class PackageController {
         return packageService.insertPackage(model)
     }
 
-    @PostMapping("/getPackage")
+    @PostMapping("/getPackageByUsername")
     fun getPackageByUsername(@RequestParam username:String): BaseResponse{
         return packageService.getPackagesFromUsername(username)
+    }
+    @PostMapping("/getPackageByName")
+    fun getPackageByName(@RequestParam name:String):BaseResponse{
+        return packageService.getPackagesFromPackageName(name)
+    }
+
+    @PostMapping("/getPackageByMostLike")
+    fun getPackageByMostLike():BaseResponse{
+        return packageService.getPackagesFromMostLike()
+    }
+
+    @PostMapping("/getPackageByMostDownload")
+    fun getPackageByMostDownload():BaseResponse{
+        return packageService.getPackagesFromMostDownload()
     }
 }
