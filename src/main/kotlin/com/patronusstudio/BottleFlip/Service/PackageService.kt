@@ -62,7 +62,7 @@ class PackageService {
         val sql = CreateTableSqlEnum.PACKAGES.getCreateSql()
         val packageTable = sqlRepo.setData(sql)
         return if (packageTable is BaseSealed.Succes) {
-            val insertSql = CreateTableSqlEnum.PACKAGES.getInsertSql(
+            val insertSql = CreateTableSqlEnum.PACKAGES.getDefaultInsertSql(
                 model.username ?: "", model.name ?: "", model.description ?: "", model.imageUrl ?: "",
                 model.numberOfLike.toString(), model.numberOfUnlike.toString(),
                 model.numberOfDownload.toString(), model.questions ?: "",
@@ -76,7 +76,7 @@ class PackageService {
                 ErrorResponse(insertResult.data.toString(), HttpStatus.NOT_ACCEPTABLE)
             }
         } else {
-            ErrorResponse("Db oluşturuluren bir hata oluştur", HttpStatus.NOT_ACCEPTABLE)
+            ErrorResponse("Db oluşturulurken bir hata oluştur", HttpStatus.NOT_ACCEPTABLE)
         }
     }
 

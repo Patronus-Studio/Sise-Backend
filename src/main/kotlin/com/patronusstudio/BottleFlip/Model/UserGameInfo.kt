@@ -9,4 +9,7 @@ data class UserGameInfo(
     @JsonProperty("bottleFlipCount") val bottleFlipCount: Int? = 0,
     @JsonProperty("level") val level: Int? = 0,
     @JsonProperty("starCount") val starCount: Int? = 0,
+    @JsonProperty("myPackages") val myPackages: String? = null,
+    @JsonProperty("myBottles") val myBottles: String? = null,
+    @JsonProperty("imageUrl") val imageUrl: String? = null,
 ) : BaseModel()

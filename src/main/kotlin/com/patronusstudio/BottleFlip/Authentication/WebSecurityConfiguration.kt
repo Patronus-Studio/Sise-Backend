@@ -43,13 +43,13 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
         http?.let {
             it.csrf().disable()
                 //tüm requestleri auth yapsın
-                .authorizeRequests()
+                //.authorizeRequests()
                 //şu adres haricindeki tüm requestlere authentication gerekli
-                .antMatchers("/login","/register","/usernameControl","/sampleSql","/hello")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
+                //.antMatchers("/login","/register","/usernameControl","/sampleSql","/hello")
+                //.permitAll()
+                //.anyRequest()
+                //.authenticated()
+                //.and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)

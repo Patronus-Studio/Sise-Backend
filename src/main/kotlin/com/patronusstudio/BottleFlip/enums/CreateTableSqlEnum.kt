@@ -13,7 +13,7 @@ enum class CreateTableSqlEnum {
                     "PRIMARY KEY (username))"
         }
 
-        override fun getInsertSql(vararg data: String): String {
+        override fun getDefaultInsertSql(vararg data: String): String {
             return "INSERT INTO users(username,email,gender,password,userType,token) VALUES(" +
                     "\"${data[0]}\",\"${data[1]}\",\"${data[2]}\",\"${data[3]}\",\"${data[4]}\",\"${data[5]}\")"
         }
@@ -32,12 +32,13 @@ enum class CreateTableSqlEnum {
     USER_GAME_INFO {
         override fun getCreateSql(): String {
             return "Create Table If not exists userGameInfo(username VARCHAR(45) REFERENCES users(username)," +
-                    "bottleFlipCount INT,level INT,starCount INT," +
+                    "bottleFlipCount INT,level INT,starCount INT,myPackages BLOB,myBottles BLOB,imageUrl BLOB" +
                     "PRIMARY KEY (username))"
         }
 
-        override fun getInsertSql(vararg data: String): String {
-            return "Insert into userGameInfo(username,bottleFlipCount,level,starCount) VALUES(\"${data[0]}\",0,0,0)"
+        override fun getDefaultInsertSql(vararg data: String): String {
+            return "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles,imageUrl)" +
+                    " VALUES(\"${data[0]}\",0,0,0,null,null,null)"
         }
 
         override fun createTableErrorMessage(): String {
@@ -64,14 +65,14 @@ enum class CreateTableSqlEnum {
                     "numberOfDownload INT," +
                     "questions BLOB," +
                     "version INT," +
-                    "lastUpdatedDate datetime DEFAULT CURRENT_TIMESTAMP," +
+                    "updatedTime datetime DEFAULT CURRENT_TIMESTAMP," +
                     "PRIMARY KEY (id))"
         }
 
-        override fun getInsertSql(vararg data: String): String {
+        override fun getDefaultInsertSql(vararg data: String): String {
             return "INSERT INTO packages(" +
                     "username,name,description,imageUrl,numberOfLike,numberOfUnlike,numberOfDownload," +
-                    "questions,version,lastUpdatedDate) VALUES(" +
+                    "questions,version,updatedTime) VALUES(" +
                     "\"${data[0]}\",\"${data[1]}\",\"${data[2]}\",\"${data[3]}\",${data[4]}," +
                     "${data[5]},${data[6]},\"${data[7]}\",${data[8]},\"${data[9]}\")"
         }
@@ -86,10 +87,44 @@ enum class CreateTableSqlEnum {
                     "Lütfen bir süre sonra tekrar deneyin."
         }
 
+    },
+    BOTTLES{
+        override fun getCreateSql(): String {
+            return "CREATE TABLE IF NOT EXISTS bottles(" +
+                    "id INT AUTO_INCREMENT," +
+                    "username VARCHAR(45) REFERENCES users(username)," +
+                    "name VARCHAR(45)," +
+                    "description VARCHAR(45)," +
+                    "luckRatio INT," +
+                    "bottleType INT," +
+                    "createdTime datetime DEFAULT CURRENT_TIMESTAMP," +
+                    "imageUrl BLOB NULL,"+
+                    "numberOfDownload INT DEFAULT 0,"+
+                    "numberOfLike INT DEFAULT 0,"+
+                    "numberOfUnlike INT DEFAULT 0,"+
+                    "updatedTime datetime DEFAULT CURRENT_TIMESTAMP," +
+                    "version INT DEFAULT 0," +
+                    "PRIMARY KEY (id))"
+        }
+        override fun getDefaultInsertSql(vararg data: String): String {
+            return "INSERT INTO bottles(username,name,description,luckRatio,bottleType,imageUrl,numberOfDownload," +
+                    "numberOfLike,numberOfUnlike,version) VALUES(\"${data[0]}\",\"${data[1]}\",\"${data[2]}\"," +
+                    "\"${data[3]}\",\"${data[4]}\",\"${data[5]}\",0,0,0,1)"
+        }
+
+        override fun createTableErrorMessage(): String {
+            return "Tablo oluşturulurken bir hata oluştu. Ekibimiz şuan hatayı incelemektedir." +
+                    "Lütfen bir süre sonra tekrar deneyin."
+        }
+
+        override fun insertDataErrorMessage(): String {
+            return "Verileriniz kaydedilirken bir hatayla karşılaşıldı. Ekibimiz şuan hatayı incelemektedir." +
+                    "Lütfen bir süre sonra tekrar deneyin."
+        }
     };
 
     abstract fun getCreateSql(): String
-    abstract fun getInsertSql(vararg data: String): String
+    abstract fun getDefaultInsertSql(vararg data: String): String
     abstract fun createTableErrorMessage(): String
     abstract fun insertDataErrorMessage(): String
 }

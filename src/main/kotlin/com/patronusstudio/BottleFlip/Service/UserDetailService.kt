@@ -67,7 +67,7 @@ class MyUserDetailsService : UserDetailsService {
             val usernameResponse = usernameControl(userModel.username)
             val emailResponse = emailControl(userModel.email)
             if (emailResponse is SuccesResponse && usernameResponse is SuccesResponse) {
-                val insertSql = CreateTableSqlEnum.USER.getInsertSql(
+                val insertSql = CreateTableSqlEnum.USER.getDefaultInsertSql(
                     userModel.username!!, userModel.email!!, userModel.gender,
                     userModel.password!!, userModel.userType, userModel.token ?: ""
                 )
@@ -90,7 +90,7 @@ class MyUserDetailsService : UserDetailsService {
         val tableCreateSql = CreateTableSqlEnum.USER_GAME_INFO.getCreateSql()
         val result = sqlRepo.setData(tableCreateSql)
         return if (result is BaseSealed.Succes) {
-            val tableInsertSql = CreateTableSqlEnum.USER_GAME_INFO.getInsertSql(username)
+            val tableInsertSql = CreateTableSqlEnum.USER_GAME_INFO.getDefaultInsertSql(username)
             val insertDataResult = sqlRepo.setData(tableInsertSql)
             if (insertDataResult is BaseSealed.Succes)
                 return SuccesResponse(status = HttpStatus.OK, message = null)
