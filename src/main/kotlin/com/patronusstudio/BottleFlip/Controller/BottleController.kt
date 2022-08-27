@@ -28,12 +28,12 @@ class BottleController {
         return bottleService.getBottleByBottleName(bottleName)
     }
 
-    @PostMapping("/getPackageByMostLike")
+    @PostMapping("/getBottleByMostLike")
     fun getBottleByMostLike():BaseResponse{
         return bottleService.getBottleFromMostLike()
     }
 
-    @PostMapping("/getPackageByMostDownload")
+    @PostMapping("/getBottleByMostDownload")
     fun getBottleByMostDownload():BaseResponse{
         return bottleService.getBottleFromMostDownload()
     }
