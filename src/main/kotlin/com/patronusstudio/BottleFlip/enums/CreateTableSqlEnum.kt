@@ -32,13 +32,13 @@ enum class CreateTableSqlEnum {
     USER_GAME_INFO {
         override fun getCreateSql(): String {
             return "Create Table If not exists userGameInfo(username VARCHAR(45) REFERENCES users(username)," +
-                    "bottleFlipCount INT,level INT,starCount INT,myPackages BLOB,myBottles BLOB,imageUrl BLOB" +
-                    "PRIMARY KEY (username))"
+                    "bottleFlipCount INT,level INT,starCount INT,myPackages VARCHAR(255),myBottles VARCHAR(255),currentAvatar VARCHAR(10)," +
+                    "buyedAvatars VARCHAR(255), PRIMARY KEY (username))"
         }
 
         override fun getDefaultInsertSql(vararg data: String): String {
-            return "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles,imageUrl)" +
-                    " VALUES(\"${data[0]}\",0,0,0,null,null,null)"
+            return "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles,currentAvatar, buyedAvatars)" +
+                    " VALUES(\"${data[0]}\",0,0,0,null,null,\"0\",null)"
         }
 
         override fun createTableErrorMessage(): String {
