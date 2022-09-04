@@ -38,4 +38,10 @@ class UserGameInfoController {
         return userGameInfoService.updateBuyedAvatars(username,buyedAvatars)
     }
 
+    @PostMapping("/updateMyPackages")
+    fun updateMyPackages(@RequestParam username: String,@RequestParam packageId:Int):BaseResponse{
+        return userGameInfoService.updateMyPackages(username,packageId)
+    }
+
+
 }

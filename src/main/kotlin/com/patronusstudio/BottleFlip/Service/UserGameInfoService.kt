@@ -64,4 +64,33 @@ class UserGameInfoService {
             ErrorResponse("Satın alma aşamasında bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
         }
     }
+
+    fun updateMyPackages(username: String,packageId:Int):BaseResponse{
+        val sql = "Select * From userGameInfo Where username = \"$username\""
+        val result = sqlRepo.getDataForObject(sql, UserGameInfo())
+        return if (result is BaseSealed.Succes) {
+            val userGameInfo = result.data as UserGameInfo
+            if(userGameInfo.myPackages.isNullOrBlank().not() && userGameInfo.myPackages.toString() !="null"){
+                val allMyPackages = userGameInfo.myPackages + packageId+";"
+                val myGettedPackagesSql = "Update userGameInfo SET myPackages= \"$allMyPackages\" Where username = \"$username\""
+                val myGettedPackagesSqlResult = sqlRepo.setData(myGettedPackagesSql)
+                return if (myGettedPackagesSqlResult is BaseSealed.Succes) {
+                    SuccesResponse(data = myGettedPackagesSqlResult.data, status = HttpStatus.OK, message = null)
+                } else {
+                    ErrorResponse("Satın alma aşamasında bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+                }
+            }
+            else{
+                val myGettedPackagesSql = "Update userGameInfo SET myPackages= \"$packageId;\" Where username = \"$username\""
+                val myGettedPackagesSqlResult = sqlRepo.setData(myGettedPackagesSql)
+                return if (myGettedPackagesSqlResult is BaseSealed.Succes) {
+                    SuccesResponse(data = myGettedPackagesSqlResult.data, status = HttpStatus.OK, message = null)
+                } else {
+                    ErrorResponse("Satın alma aşamasında bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+                }
+            }
+        } else {
+            ErrorResponse("Satın alma aşamasında bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+        }
+    }
 }
