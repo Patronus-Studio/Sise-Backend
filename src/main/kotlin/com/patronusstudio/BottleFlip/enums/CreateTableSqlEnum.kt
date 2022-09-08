@@ -33,12 +33,12 @@ enum class CreateTableSqlEnum {
         override fun getCreateSql(): String {
             return "Create Table If not exists userGameInfo(username VARCHAR(45) REFERENCES users(username)," +
                     "bottleFlipCount INT,level INT,starCount INT,myPackages VARCHAR(255),myBottles VARCHAR(255),currentAvatar VARCHAR(10)," +
-                    "buyedAvatars VARCHAR(255), PRIMARY KEY (username))"
+                    "buyedAvatars VARCHAR(255),achievement VARCHAR(255) PRIMARY KEY (username))"
         }
 
         override fun getDefaultInsertSql(vararg data: String): String {
-            return "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles,currentAvatar, buyedAvatars)" +
-                    " VALUES(\"${data[0]}\",0,0,0,null,null,\"0\",null)"
+            return "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles,currentAvatar, buyedAvatars,achievement)" +
+                    " VALUES(\"${data[0]}\",0,0,0,null,null,\"0\",null,null)"
         }
 
         override fun createTableErrorMessage(): String {
@@ -121,6 +121,30 @@ enum class CreateTableSqlEnum {
             return "Verileriniz kaydedilirken bir hatayla karşılaşıldı. Ekibimiz şuan hatayı incelemektedir." +
                     "Lütfen bir süre sonra tekrar deneyin."
         }
+    },ACHIEVEMENT{
+        override fun getCreateSql(): String {
+            return "CREATE TABLE IF NOT EXISTS achievement(" +
+                    "id INT AUTO_INCREMENT," +
+                    "award INT NOT NULL, " +
+                    "title VARCHAR (55) NOT NULL, " +
+                    "content VARCHAR(255) NOT NULL, " +
+                    "imageUrl VARCHAR(255) NOT NULL, " +
+                    "winnerCount INT DEFAULT 0, " +
+                    "PRIMARY KEY (id))"
+        }
+
+        override fun getDefaultInsertSql(vararg data: String): String {
+            return ""
+        }
+
+        override fun createTableErrorMessage(): String {
+            return ""
+        }
+
+        override fun insertDataErrorMessage(): String {
+            return ""
+        }
+
     };
 
     abstract fun getCreateSql(): String

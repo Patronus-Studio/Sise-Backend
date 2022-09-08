@@ -26,7 +26,7 @@ class MyUserDetailsService : UserDetailsService {
 
     override fun loadUserByUsername(username: String?): UserDetails {
         val sql = "SELECT * From users Where username = \"$username\""
-        val res = sqlRepo.getDataForObject<UserModel>(sql, UserModel())
+        val res = sqlRepo.getDataForObject(sql, UserModel::class.java)
         return when (res) {
             is BaseSealed.Succes -> User(
                 username,
@@ -39,7 +39,7 @@ class MyUserDetailsService : UserDetailsService {
 
     fun usernameControl(username: String?): BaseResponse {
         val sql = "SELECT * FROM users WHERE username = \"$username\""
-        val res = sqlRepo.getDataForObject(sql, UserModel())
+        val res = sqlRepo.getDataForObject(sql, UserModel::class.java)
         return when (res) {
             is BaseSealed.Succes -> ErrorResponse(
                 "Bu kullanıcı adı kullanılmaktadır.",
@@ -51,7 +51,7 @@ class MyUserDetailsService : UserDetailsService {
 
     fun emailControl(email: String?): BaseResponse {
         val sql = "SELECT * FROM users WHERE email = \"$email\""
-        val res = sqlRepo.getDataForObject(sql, UserModel())
+        val res = sqlRepo.getDataForObject(sql, UserModel::class.java)
         return when (res) {
             is BaseSealed.Succes -> ErrorResponse(
                 "Bu email kullanılmaktadır.",

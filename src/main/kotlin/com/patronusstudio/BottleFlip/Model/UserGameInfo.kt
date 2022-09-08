@@ -12,4 +12,5 @@ data class UserGameInfo(
     @JsonProperty("myBottles") val myBottles: String? = null,
     @JsonProperty("currentAvatar") val currentAvatar: String? = null,
     @JsonProperty("buyedAvatars") val buyedAvatars: String? = null,
+    @JsonProperty("achievement") val achievement: String? = null,
 ) : BaseModel()

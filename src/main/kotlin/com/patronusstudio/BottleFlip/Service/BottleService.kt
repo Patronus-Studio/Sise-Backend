@@ -4,7 +4,6 @@ import com.patronusstudio.BottleFlip.Base.BaseResponse
 import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.BottleModel
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
-import com.patronusstudio.BottleFlip.Model.PackageModel
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
 import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
@@ -40,7 +39,7 @@ class BottleService {
 
     fun getBottleByUsername(username: String): BaseResponse {
         val sql = "SELECT * FROM bottles where username = \"$username\""
-        val userBottles = sqlRepo.getDataForList(sql, BottleModel())
+        val userBottles = sqlRepo.getDataForList(sql)
         return if (userBottles is BaseSealed.Succes) {
             SuccesResponse(data = userBottles.data, status = HttpStatus.OK, message = null)
         } else {
@@ -51,7 +50,7 @@ class BottleService {
 
     fun getBottleByBottleName(bottleName: String): BaseResponse {
         val sql = "SELECT * FROM bottles where name = \"$bottleName\""
-        val userBottles = sqlRepo.getDataForList(sql, BottleModel())
+        val userBottles = sqlRepo.getDataForList(sql)
         return if (userBottles is BaseSealed.Succes) {
             SuccesResponse(data = userBottles.data, status = HttpStatus.OK, message = null)
         } else {
@@ -62,7 +61,7 @@ class BottleService {
 
     fun getBottleFromMostLike():BaseResponse{
         val sql = "Select * from bottles order by numberOfLike desc"
-        val result = sqlRepo.getDataForList(sql, PackageModel())
+        val result = sqlRepo.getDataForList(sql)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -72,7 +71,7 @@ class BottleService {
 
     fun getBottleFromMostDownload():BaseResponse{
         val sql = "Select * from bottles order by numberOfDownload desc"
-        val result = sqlRepo.getDataForList(sql, PackageModel())
+        val result = sqlRepo.getDataForList(sql)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {

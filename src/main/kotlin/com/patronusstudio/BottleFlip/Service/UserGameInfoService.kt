@@ -18,7 +18,7 @@ class UserGameInfoService {
 
     fun getUserGameInfo(username: String): BaseResponse {
         val sql = "Select * From userGameInfo Where username = \"$username\""
-        val result = sqlRepo.getDataForObject(sql, UserGameInfo())
+        val result = sqlRepo.getDataForObject(sql, UserGameInfo::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -38,7 +38,7 @@ class UserGameInfoService {
 
     fun updateBuyedAvatars(username: String,buyedAvatars:Int):BaseResponse{
         val sql = "Select * From userGameInfo Where username = \"$username\""
-        val result = sqlRepo.getDataForObject(sql, UserGameInfo())
+        val result = sqlRepo.getDataForObject(sql, UserGameInfo::class.java)
         return if (result is BaseSealed.Succes) {
             val userGameInfo = result.data as UserGameInfo
             if(userGameInfo.buyedAvatars.isNullOrBlank().not() && userGameInfo.buyedAvatars.toString() !="null"){
@@ -67,7 +67,7 @@ class UserGameInfoService {
 
     fun updateMyPackages(username: String,packageId:Int):BaseResponse{
         val sql = "Select * From userGameInfo Where username = \"$username\""
-        val result = sqlRepo.getDataForObject(sql, UserGameInfo())
+        val result = sqlRepo.getDataForObject(sql, UserGameInfo::class.java)
         return if (result is BaseSealed.Succes) {
             val userGameInfo = result.data as UserGameInfo
             if(userGameInfo.myPackages.isNullOrBlank().not() && userGameInfo.myPackages.toString() !="null"){
