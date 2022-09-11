@@ -65,15 +65,6 @@ class AchievementService {
         }
         return SuccesResponse(null, HttpStatus.OK, allList)
     }
-
-
-//    fun winAward(username: String,achievementId:Int):BaseResponse{
-//        // müşterinin achievement idleri getirilecek
-//        // bu id ile karşılaştırılacak
-//        // eğer yoksa eklenecek ve onun karşılığındaki ödül profile eklenecek
-//        //succes olursa müşteriye dönülecek
-//    }
-
     fun winAward(username: String, winningAchievementId: Int): BaseResponse {
         val getAchievementSql = "SELECT * from userGameInfo where username = \"$username\""
         val getAchievementResult = sqlRepo.getDataForObject(getAchievementSql, UserGameInfo::class.java)
