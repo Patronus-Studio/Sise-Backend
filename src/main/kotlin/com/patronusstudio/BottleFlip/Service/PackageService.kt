@@ -20,7 +20,7 @@ class PackageService {
 
     fun getPackagesFromUsername(username: String): BaseResponse {
         val sql = "Select * From packages Where username = \"$username\""
-        val result = sqlRepo.getDataForList(sql)
+        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -30,7 +30,7 @@ class PackageService {
 
     fun getPackagesFromPackageName(packageName:String):BaseResponse{
         val sql = "Select * From packages Where name = \"$packageName\""
-        val result = sqlRepo.getDataForList(sql)
+        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -40,7 +40,7 @@ class PackageService {
 
     fun getPackagesFromMostLike():BaseResponse{
         val sql = "Select * from packages order by numberOfLike desc"
-        val result = sqlRepo.getDataForList(sql)
+        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -50,7 +50,7 @@ class PackageService {
 
     fun getPackagesFromMostDownload():BaseResponse{
         val sql = "Select * from packages order by numberOfDownload desc"
-        val result = sqlRepo.getDataForList(sql)
+        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {

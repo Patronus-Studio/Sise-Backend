@@ -1,21 +1,21 @@
 package com.patronusstudio.BottleFlip.Model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.patronusstudio.BottleFlip.Base.BaseModel
 import com.patronusstudio.BottleFlip.enums.AchievementEnum
 
 data class AchievementModel(
-    @SerializedName("id")
+    @JsonProperty("id")
     val id:Int,
-    @SerializedName("title")
+    @JsonProperty("title")
     val title:String,
-    @SerializedName("content")
+    @JsonProperty("content")
     val content:String,
-    @SerializedName("imageUrl")
+    @JsonProperty("imageUrl")
     val imageUrl:String,
-    @SerializedName("award")
+    @JsonProperty("award")
     val award:Int,
-    @SerializedName("winnerCount")
+    @JsonProperty("winnerCount")
     val winnerCount:Int = 0,
     var userAchievementEnum: AchievementEnum = AchievementEnum.NOT_REACHED
 ): BaseModel()

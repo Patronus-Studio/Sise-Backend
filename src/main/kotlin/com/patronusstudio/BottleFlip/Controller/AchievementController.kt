@@ -32,4 +32,9 @@ class AchievementController {
     fun getUserAwards(@RequestParam username:String):BaseResponse{
         return achievementService.getUserAwards(username)
     }
+
+    @GetMapping("/winAward")
+    fun winAward(@RequestParam username: String,@RequestParam winningAchievementId: Int):BaseResponse{
+        return achievementService.winAward(username,winningAchievementId)
+    }
 }

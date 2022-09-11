@@ -82,7 +82,7 @@ class MyUserDetailsService : UserDetailsService {
             else if (emailResponse is SuccesResponse && usernameResponse is ErrorResponse) usernameResponse
             else ErrorResponse("Kullanıcı adı ve email adresi kullanılmaktadır.", HttpStatus.NOT_ACCEPTABLE)
         } else {
-            ErrorResponse(CreateTableSqlEnum.USER.createTableErrorMessage(), HttpStatus.NOT_ACCEPTABLE)
+            ErrorResponse("Tablo oluşturulurken bir hatayla karşılaşıldı", HttpStatus.NOT_ACCEPTABLE)
         }
     }
 
@@ -95,10 +95,10 @@ class MyUserDetailsService : UserDetailsService {
             if (insertDataResult is BaseSealed.Succes)
                 return SuccesResponse(status = HttpStatus.OK, message = null)
             else ErrorResponse(
-                CreateTableSqlEnum.USER_GAME_INFO.insertDataErrorMessage(), HttpStatus.NOT_ACCEPTABLE
+                "Tablo oluşturulurken bir hatayla karşılaşıldı", HttpStatus.NOT_ACCEPTABLE
             )
         } else ErrorResponse(
-            CreateTableSqlEnum.USER_GAME_INFO.createTableErrorMessage(), HttpStatus.NOT_ACCEPTABLE
+            "Tablo oluşturulurken bir hatayla karşılaşıldı", HttpStatus.NOT_ACCEPTABLE
         )
     }
 

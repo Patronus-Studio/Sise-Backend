@@ -39,7 +39,7 @@ class BottleService {
 
     fun getBottleByUsername(username: String): BaseResponse {
         val sql = "SELECT * FROM bottles where username = \"$username\""
-        val userBottles = sqlRepo.getDataForList(sql)
+        val userBottles = sqlRepo.getDataForList<BottleModel>(sql,BottleModel::class.java)
         return if (userBottles is BaseSealed.Succes) {
             SuccesResponse(data = userBottles.data, status = HttpStatus.OK, message = null)
         } else {
@@ -50,7 +50,7 @@ class BottleService {
 
     fun getBottleByBottleName(bottleName: String): BaseResponse {
         val sql = "SELECT * FROM bottles where name = \"$bottleName\""
-        val userBottles = sqlRepo.getDataForList(sql)
+        val userBottles = sqlRepo.getDataForList<BottleModel>(sql,BottleModel::class.java)
         return if (userBottles is BaseSealed.Succes) {
             SuccesResponse(data = userBottles.data, status = HttpStatus.OK, message = null)
         } else {
@@ -61,7 +61,7 @@ class BottleService {
 
     fun getBottleFromMostLike():BaseResponse{
         val sql = "Select * from bottles order by numberOfLike desc"
-        val result = sqlRepo.getDataForList(sql)
+        val result = sqlRepo.getDataForList<BottleModel>(sql,BottleModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -71,7 +71,7 @@ class BottleService {
 
     fun getBottleFromMostDownload():BaseResponse{
         val sql = "Select * from bottles order by numberOfDownload desc"
-        val result = sqlRepo.getDataForList(sql)
+        val result = sqlRepo.getDataForList<BottleModel>(sql,BottleModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
