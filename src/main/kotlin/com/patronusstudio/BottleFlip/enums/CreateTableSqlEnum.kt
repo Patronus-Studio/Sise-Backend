@@ -33,7 +33,7 @@ enum class CreateTableSqlEnum {
     LEVELS {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS levels(" +
-                    "id INT AUTO_INCREMENT,level INT, star INT, winnerCount INT,\n" +
+                    "id INT AUTO_INCREMENT,level INT, star INT, winnerCount INT DEFAULT 0,\n" +
                     "PRIMARY KEY (id))"
         }
 

@@ -23,4 +23,17 @@ class LevelService {
             return ErrorResponse("Leveller getirilirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
         return SuccesResponse(status = HttpStatus.OK, data = (getLevelsList as BaseSealed.Succes).data)
     }
+
+    fun addNewLevel(level:Int,star:Int):BaseResponse{
+        val isThereLevelSql = "Select * From levels where level = $level"
+        val isThereLevelResult = sqlRepo.getDataForObject(isThereLevelSql,LevelsModel::class.java)
+        if(isThereLevelResult is BaseSealed.Succes){
+            return ErrorResponse("Böyle bir level mevcut. O yüzden yeni level eklenemiyor.", HttpStatus.NOT_ACCEPTABLE)
+        }
+        val addLevelSql = "Insert Into levels(level,star) values($level,$star)"
+        val addResult = sqlRepo.setData(addLevelSql)
+        if(addResult is BaseSealed.Error)
+            return ErrorResponse("Level eklenirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+        return SuccesResponse(status = HttpStatus.OK, data = "Level eklendi")
+    }
 }
