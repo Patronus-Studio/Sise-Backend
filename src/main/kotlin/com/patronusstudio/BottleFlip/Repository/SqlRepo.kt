@@ -6,8 +6,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.patronusstudio.BottleFlip.Base.BaseModel
 import com.patronusstudio.BottleFlip.Base.BaseSealed
+import com.patronusstudio.BottleFlip.enums.SqlErrorType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.reflect.Type
@@ -26,15 +28,14 @@ class SqlRepo {
 
     fun <T : BaseModel> getDataForObject(sqlQuery: String, classType: Class<T>): BaseSealed {
         return try {
-            val result = jdbcConnection.queryForMap(sqlQuery)
-            val json = mapper.writeValueAsString(result)
-            val user = Gson().fromJson(json,classType)
-            BaseSealed.Succes(user)
+            val result = jdbcConnection.queryForObject(sqlQuery, classType)
+            BaseSealed.Succes(result)
         } catch (e: DataAccessException) {
-            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)))
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
         }
     }
-    fun <T:BaseModel>getDataForList(sqlQuery: String,classType:Class<T>): BaseSealed {
+
+    fun <T : BaseModel> getDataForList(sqlQuery: String, classType: Class<T>): BaseSealed {
         return try {
             val result = jdbcConnection.queryForList(sqlQuery)
 
@@ -43,17 +44,19 @@ class SqlRepo {
 
             BaseSealed.Succes(keyPairBoolDataList)
         } catch (e: DataAccessException) {
-            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)))
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
         }
     }
 
 
     fun getBasicData(sqlQuery: String): BaseSealed {
         return try {
-            val result = jdbcConnection.queryForObject(sqlQuery,String::class.java)
+            val result = jdbcConnection.queryForObject(sqlQuery, String::class.java)
             BaseSealed.Succes(result)
+        } catch (e: EmptyResultDataAccessException) {
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.EMPTY_RESULT_DATA)
         } catch (e: DataAccessException) {
-            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)))
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
         }
     }
 
@@ -62,7 +65,7 @@ class SqlRepo {
             jdbcConnection.update(sqlQuery)
             BaseSealed.Succes()
         } catch (e: DataAccessException) {
-            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)))
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
         }
     }
 }

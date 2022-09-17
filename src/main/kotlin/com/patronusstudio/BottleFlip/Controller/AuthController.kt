@@ -48,6 +48,11 @@ class AuthController {
         return userDetailsService.usernameControl(username)
     }
 
+    @PostMapping("/emailControl")
+    fun emailControl(@RequestParam email: String): BaseResponse {
+        return userDetailsService.emailControl(email)
+    }
+
     @PostMapping("/register")
     fun register(@RequestBody userModel: UserModel): BaseResponse {
         return userDetailsService.register(userModel)
