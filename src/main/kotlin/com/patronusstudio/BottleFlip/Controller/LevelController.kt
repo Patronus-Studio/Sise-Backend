@@ -1,6 +1,7 @@
 package com.patronusstudio.BottleFlip.Controller
 
 import com.patronusstudio.BottleFlip.Base.BaseResponse
+import com.patronusstudio.BottleFlip.Model.LevelsModel
 import com.patronusstudio.BottleFlip.Service.LevelService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -16,9 +17,12 @@ class LevelController {
     fun getAllLevel(): BaseResponse {
         return levelService.getAllLevel()
     }
-
     @PostMapping("/addLevel")
     fun addNewLevel(@RequestParam level:Int,@RequestParam star:Int):BaseResponse{
         return levelService.addNewLevel(level,star)
+    }
+    @PostMapping("/updateLevel")
+    fun addNewLevel(@RequestBody level:LevelsModel):BaseResponse{
+        return levelService.updateLevelDetail(level)
     }
 }
