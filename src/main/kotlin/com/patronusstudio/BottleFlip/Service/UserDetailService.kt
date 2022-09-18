@@ -6,6 +6,7 @@ import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
+import com.patronusstudio.BottleFlip.Utils.isEmailValid
 import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
 import com.patronusstudio.BottleFlip.enums.SqlErrorType
 import org.springframework.beans.factory.annotation.Autowired
@@ -56,8 +57,10 @@ class MyUserDetailsService : UserDetailsService {
         }
     }
 
-    // TODO: 18.09.2022 Email geçerli mi kontrolü yapılacak
     fun emailControl(email: String?): BaseResponse {
+        if(isEmailValid(email ?: "").not()){
+            return ErrorResponse("Email formatı geçersiz.",HttpStatus.NOT_ACCEPTABLE)
+        }
         val sql = "SELECT * FROM users WHERE email = \"$email\""
         val res = sqlRepo.getBasicData(sql)
         return when (res) {
