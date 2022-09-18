@@ -90,8 +90,8 @@ class MyUserDetailsService : UserDetailsService {
                 return emailResponse
             }
             val insertSql = CreateTableSqlEnum.USER.getDefaultInsertSql(
-                userModel.username!!, userModel.email!!, userModel.gender,
-                userModel.password!!, userModel.userType, userModel.token ?: ""
+                userModel.username, userModel.email, userModel.gender,
+                userModel.password, userModel.userType, userModel.token
             )
             val res = sqlRepo.setData(insertSql)
             if (res is BaseSealed.Succes) {

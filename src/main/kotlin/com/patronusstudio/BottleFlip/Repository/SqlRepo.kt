@@ -28,7 +28,9 @@ class SqlRepo {
 
     fun <T : BaseModel> getDataForObject(sqlQuery: String, classType: Class<T>): BaseSealed {
         return try {
-            val result = jdbcConnection.queryForObject(sqlQuery, classType)
+            val resultSql = jdbcConnection.queryForMap(sqlQuery)
+            val json = mapper.writeValueAsString(resultSql)
+            val result = Gson().fromJson(json,classType)
             BaseSealed.Succes(result)
         } catch (e: DataAccessException) {
             BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)

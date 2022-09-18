@@ -1,15 +1,14 @@
 package com.patronusstudio.BottleFlip.Model
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.gson.annotations.SerializedName
 import com.patronusstudio.BottleFlip.Base.BaseModel
-import java.time.LocalDateTime
 
 data class UserModel(
-    @JsonProperty("email") val email: String? = null,
-    @JsonProperty("gender") val gender: String = "0",
-    @JsonProperty("password") val password: String? = null,
-    @JsonProperty("username") val username: String? = null,
-    @JsonProperty("userType") val userType: String = "0",
-    @JsonProperty("createdTime") val createdTime: LocalDateTime? = null,
-    @JsonProperty("token") val token: String? = null,
+    @SerializedName("username") val username: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("gender") val gender: String,
+    @SerializedName("password") val password: String,
+    @SerializedName("userType") val userType: String = "0",
+    @SerializedName("createdTime") val createdTime: Long? = null,
+    @SerializedName("token") val token: String,
 ):BaseModel()
