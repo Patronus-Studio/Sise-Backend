@@ -1,6 +1,7 @@
 package com.patronusstudio.BottleFlip.Controller
 
 import com.patronusstudio.BottleFlip.Base.BaseResponse
+import com.patronusstudio.BottleFlip.Model.PackageCategoriesTypeModel
 import com.patronusstudio.BottleFlip.Model.PackageModel
 import com.patronusstudio.BottleFlip.Service.PackageService
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,5 +36,20 @@ class PackageController {
     @PostMapping("/getPackageByMostDownload")
     fun getPackageByMostDownload():BaseResponse{
         return packageService.getPackagesFromMostDownload()
+    }
+
+    @GetMapping("/getAllPackageCategories")
+    fun getAllPackageCategories():BaseResponse{
+        return packageService.getAllPackageCategories()
+    }
+
+    @PostMapping("/addPackageCategory")
+    fun addPackageCategory(@RequestParam type:String):BaseResponse{
+        return packageService.addPackageCategory(type)
+    }
+
+    @PostMapping("/updatePackageCategory")
+    fun updatePackageCategory(@RequestBody model:PackageCategoriesTypeModel):BaseResponse{
+        return packageService.updatePackageCategory(model)
     }
 }

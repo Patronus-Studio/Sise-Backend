@@ -107,6 +107,16 @@ enum class CreateTableSqlEnum {
         override fun getDefaultInsertSql(vararg data: String): String {
             return ""
         }
+    },
+    PACKAGE_CATEGORIES_TYPE{
+        override fun getCreateSql(): String {
+            return "CREATE TABLE IF NOT EXISTS packageCategoriesType(id INT AUTO_INCREMENT,type VARCHAR(45),PRIMARY KEY(id))"
+        }
+
+        override fun getDefaultInsertSql(vararg data: String): String {
+            return "INSERT INTO packageCategoriesType(type) VALUES(\"${data[0]}\")"
+        }
+
     };
 
     abstract fun getCreateSql(): String
