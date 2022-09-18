@@ -3,6 +3,7 @@ package com.patronusstudio.BottleFlip.Service
 import com.patronusstudio.BottleFlip.Base.BaseResponse
 import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
+import com.patronusstudio.BottleFlip.Model.PackageCategoriesTypeModel
 import com.patronusstudio.BottleFlip.Model.PackageModel
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
@@ -80,4 +81,30 @@ class PackageService {
         }
     }
 
+    fun getAllPackageCategories():BaseResponse{
+        val sql = "Select * From packageCategoriesType order by id asc"
+        val categoryModel = sqlRepo.getDataForList(sql,PackageCategoriesTypeModel::class.java)
+        if(categoryModel is BaseSealed.Error){
+            return ErrorResponse("Paket kategorileri çekilirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+        }
+        return SuccesResponse(data = (categoryModel as BaseSealed.Succes).data, status = HttpStatus.OK)
+    }
+
+    fun addPackageCategory(type:String):BaseResponse{
+        val sql = "INSERT INTO packageCategoriesType(type) VALUES (\"$type\")"
+        val result = sqlRepo.setData(sql)
+        if(result is BaseSealed.Error){
+            return ErrorResponse("Kategori eklenirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+        }
+        return SuccesResponse("Ekleme başarılı", HttpStatus.OK)
+    }
+
+    fun updatePackageCategory(packageCategoryModel:PackageCategoriesTypeModel):BaseResponse{
+        val sql = "UPDATE packageCategoriesType SET type = \"${packageCategoryModel.type}\" WHERE id = ${packageCategoryModel.id} "
+        val result = sqlRepo.setData(sql)
+        if(result is BaseSealed.Error){
+            return ErrorResponse("Kategori düzenlenirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
+        }
+        return SuccesResponse("Paket kategorisi düzenlendi.", HttpStatus.OK)
+    }
 }
