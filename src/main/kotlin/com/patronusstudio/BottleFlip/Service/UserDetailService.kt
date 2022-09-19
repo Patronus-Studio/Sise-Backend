@@ -7,8 +7,8 @@ import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
 import com.patronusstudio.BottleFlip.Utils.isEmailValid
-import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
 import com.patronusstudio.BottleFlip.enums.SqlErrorType
+import com.patronusstudio.BottleFlip.enums.TableTypeEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.userdetails.User
@@ -46,7 +46,7 @@ class MyUserDetailsService : UserDetailsService {
             is BaseSealed.Error -> {
                 if (res.sqlErrorType == SqlErrorType.EMPTY_RESULT_DATA) {
                     SuccesResponse(status = HttpStatus.OK, data = "Kullanıcı adı kullanılabilir.")
-                } else{
+                } else {
                     ErrorResponse(
                         "Bu kullanıcı adı kullanılmaktadır.",
                         HttpStatus.NOT_ACCEPTABLE
@@ -58,8 +58,8 @@ class MyUserDetailsService : UserDetailsService {
     }
 
     fun emailControl(email: String?): BaseResponse {
-        if(isEmailValid(email ?: "").not()){
-            return ErrorResponse("Email formatı geçersiz.",HttpStatus.NOT_ACCEPTABLE)
+        if (isEmailValid(email ?: "").not()) {
+            return ErrorResponse("Email formatı geçersiz.", HttpStatus.NOT_ACCEPTABLE)
         }
         val sql = "SELECT * FROM users WHERE email = \"$email\""
         val res = sqlRepo.getBasicData(sql)
@@ -67,7 +67,7 @@ class MyUserDetailsService : UserDetailsService {
             is BaseSealed.Error -> {
                 if (res.sqlErrorType == SqlErrorType.EMPTY_RESULT_DATA) {
                     SuccesResponse(status = HttpStatus.OK, data = "Email kullanılabilir.")
-                } else{
+                } else {
                     ErrorResponse(
                         "Bu email kullanılmaktadır.",
                         HttpStatus.NOT_ACCEPTABLE
@@ -79,20 +79,20 @@ class MyUserDetailsService : UserDetailsService {
     }
 
     fun register(userModel: UserModel): BaseResponse {
-        val est = sqlRepo.setData(CreateTableSqlEnum.USER.getCreateSql())
+        val est = sqlRepo.setData(TableTypeEnum.USER.getCreateSql())
         return if (est is BaseSealed.Succes) {
             val usernameResponse = usernameControl(userModel.username)
-            if(usernameResponse is ErrorResponse){
+            if (usernameResponse is ErrorResponse) {
                 return usernameResponse
             }
             val emailResponse = emailControl(userModel.email)
-            if(emailResponse is ErrorResponse){
+            if (emailResponse is ErrorResponse) {
                 return emailResponse
             }
-            val insertSql = CreateTableSqlEnum.USER.getDefaultInsertSql(
-                userModel.username, userModel.email, userModel.gender,
-                userModel.password, userModel.userType, userModel.token
-            )
+            val insertSql = "INSERT INTO users(username,email,gender,password,userType,token) VALUES(" +
+                    "\"${userModel.username}\",\"${userModel.email}\",\"${userModel.gender}\",\"${userModel.password}\"," +
+                    "\"${userModel.userType}\",\"${userModel.token}\")"
+
             val res = sqlRepo.setData(insertSql)
             if (res is BaseSealed.Succes) {
                 userGameInfoSetData(userModel.username)
@@ -106,17 +106,14 @@ class MyUserDetailsService : UserDetailsService {
     }
 
     private fun userGameInfoSetData(username: String): BaseResponse {
-        val tableCreateSql = CreateTableSqlEnum.USER_GAME_INFO.getCreateSql()
-        val result = sqlRepo.setData(tableCreateSql)
-        return if (result is BaseSealed.Succes) {
-            val tableInsertSql = CreateTableSqlEnum.USER_GAME_INFO.getDefaultInsertSql(username)
-            val insertDataResult = sqlRepo.setData(tableInsertSql)
-            if (insertDataResult is BaseSealed.Succes)
-                return SuccesResponse(status = HttpStatus.OK, message = null)
-            else ErrorResponse(
-                "Tablo oluşturulurken bir hatayla karşılaşıldı", HttpStatus.NOT_ACCEPTABLE
-            )
-        } else ErrorResponse(
+        val tableInsertSql = "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles," +
+                "currentAvatar, buyedAvatars,achievement)" +
+                " VALUES(\"$username}\",0,0,0,null,null,\"0\",null,null)"
+
+        val insertDataResult = sqlRepo.setData(tableInsertSql)
+        return if (insertDataResult is BaseSealed.Succes)
+            SuccesResponse(status = HttpStatus.OK, message = null)
+        else ErrorResponse(
             "Tablo oluşturulurken bir hatayla karşılaşıldı", HttpStatus.NOT_ACCEPTABLE
         )
     }

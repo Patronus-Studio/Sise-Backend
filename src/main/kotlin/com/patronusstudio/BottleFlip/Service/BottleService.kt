@@ -6,7 +6,6 @@ import com.patronusstudio.BottleFlip.Model.BottleModel
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
-import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -18,22 +17,15 @@ class BottleService {
     private lateinit var sqlRepo: SqlRepo
 
     fun insertBottle(model: BottleModel): BaseResponse {
-        val sql = CreateTableSqlEnum.BOTTLES.getCreateSql()
-        val bottleTable = sqlRepo.setData(sql)
-        return if (bottleTable is BaseSealed.Succes) {
-            val insertSql = CreateTableSqlEnum.BOTTLES.getDefaultInsertSql(
-                model.username ?: "", model.name ?: "", model.description ?: "", model.luckRatio.toString(),
-                model.bottleType.toString(), model.imageUrl ?: ""
-            )
-            val insertResult = sqlRepo.setData(insertSql)
-            if (insertResult is BaseSealed.Succes) {
-                SuccesResponse("Şişe eklendi", HttpStatus.OK)
-            } else {
-                insertResult as BaseSealed.Error
-                ErrorResponse(insertResult.data.toString(), HttpStatus.NOT_ACCEPTABLE)
-            }
+        val insertSql = "INSERT INTO bottles(name,description,luckRatio,bottleType,imageUrl,numberOfDownload," +
+                "numberOfLike,numberOfUnlike,version) VALUES(\"${model.name}\",\"${model.description}\",\"${model.luckRatio}\"," +
+                "\"${model.bottleType}\",\"${model.imageUrl}\",0,0,0,1)"
+        val insertResult = sqlRepo.setData(insertSql)
+        return if (insertResult is BaseSealed.Succes) {
+            SuccesResponse("Şişe eklendi", HttpStatus.OK)
         } else {
-            ErrorResponse("Db oluşturulurken bir hata oluştur", HttpStatus.NOT_ACCEPTABLE)
+            insertResult as BaseSealed.Error
+            ErrorResponse(insertResult.data.toString(), HttpStatus.NOT_ACCEPTABLE)
         }
     }
 

@@ -7,11 +7,10 @@ import com.patronusstudio.BottleFlip.Model.PackageCategoriesTypeModel
 import com.patronusstudio.BottleFlip.Model.PackageModel
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
-import com.patronusstudio.BottleFlip.enums.CreateTableSqlEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import java.sql.Timestamp
 
 @Service
 class PackageService {
@@ -60,24 +59,19 @@ class PackageService {
     }
 
     fun insertPackage(model: PackageModel): BaseResponse {
-        val sql = CreateTableSqlEnum.PACKAGES.getCreateSql()
-        val packageTable = sqlRepo.setData(sql)
-        return if (packageTable is BaseSealed.Succes) {
-            val insertSql = CreateTableSqlEnum.PACKAGES.getDefaultInsertSql(
-                model.username ?: "", model.name ?: "", model.description ?: "", model.imageUrl ?: "",
-                model.numberOfLike.toString(), model.numberOfUnlike.toString(),
-                model.numberOfDownload.toString(), model.questions ?: "",
-                model.version.toString(), LocalDateTime.now().toString()
-            )
-            val insertResult = sqlRepo.setData(insertSql)
-            if (insertResult is BaseSealed.Succes) {
-                SuccesResponse("Paket eklendi", HttpStatus.OK)
-            } else {
-                insertResult as BaseSealed.Error
-                ErrorResponse(insertResult.data.toString(), HttpStatus.NOT_ACCEPTABLE)
-            }
+        val insertSql = "INSERT INTO packages(" +
+                "username,name,description,imageUrl,numberOfLike,numberOfUnlike,numberOfDownload," +
+                "questions,version,updatedTime,packageCategory) VALUES(" +
+                "\"${model.username}\",\"${model.name}\",\"${model.description}\",\"${model.imageUrl}\"," +
+                "${model.numberOfLike},${model.numberOfUnlike},${model.numberOfDownload},\"${model.questions}\"" +
+                ",${model.version},\"${Timestamp(System.currentTimeMillis())}\",${model.packageCategory})"
+
+        val insertResult = sqlRepo.setData(insertSql)
+        return if (insertResult is BaseSealed.Succes) {
+            SuccesResponse("Paket eklendi", HttpStatus.OK)
         } else {
-            ErrorResponse("Db oluşturulurken bir hata oluştur", HttpStatus.NOT_ACCEPTABLE)
+            insertResult as BaseSealed.Error
+            ErrorResponse(insertResult.data.toString(), HttpStatus.NOT_ACCEPTABLE)
         }
     }
 

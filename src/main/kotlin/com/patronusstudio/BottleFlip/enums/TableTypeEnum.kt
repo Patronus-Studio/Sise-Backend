@@ -1,6 +1,9 @@
 package com.patronusstudio.BottleFlip.enums
 
-enum class CreateTableSqlEnum {
+import com.google.gson.annotations.SerializedName
+
+enum class TableTypeEnum {
+    @SerializedName("USER")
     USER {
         override fun getCreateSql(): String {
             return "CREATE Table If Not Exists users(username VARCHAR(45) NOT NULL," +
@@ -13,13 +16,15 @@ enum class CreateTableSqlEnum {
                     "PRIMARY KEY (username))"
         }
     },
+    @SerializedName("USER_GAME_INFO")
     USER_GAME_INFO {
         override fun getCreateSql(): String {
-            return "Create Table If not exists userGameInfo(username VARCHAR(45) REFERENCES users(username)," +
+            return "Create Table If not exists userGameInfo(username VARCHAR(45)," +
                     "bottleFlipCount INT,level INT,starCount INT,myPackages VARCHAR(255),myBottles VARCHAR(255),currentAvatar VARCHAR(10)," +
-                    "buyedAvatars VARCHAR(255),achievement VARCHAR(255) PRIMARY KEY (username))"
+                    "buyedAvatars VARCHAR(255),achievement VARCHAR(255), PRIMARY KEY (username) )"
         }
     },
+    @SerializedName("LEVELS")
     LEVELS {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS levels(" +
@@ -27,6 +32,7 @@ enum class CreateTableSqlEnum {
                     "PRIMARY KEY (id))"
         }
     },
+    @SerializedName("PACKAGES")
     PACKAGES {
         override fun getCreateSql(): String {
             return "Create Table If Not Exists packages(" +
@@ -42,10 +48,11 @@ enum class CreateTableSqlEnum {
                     "questions BLOB," +
                     "version INT," +
                     "updatedTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
-                    "packageCategory INT" +
+                    "packageCategory INT," +
                     "PRIMARY KEY (id))"
         }
     },
+    @SerializedName("BOTTLES")
     BOTTLES {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS bottles(" +
@@ -65,6 +72,7 @@ enum class CreateTableSqlEnum {
                     "PRIMARY KEY (id))"
         }
     },
+    @SerializedName("ACHIEVEMENT")
     ACHIEVEMENT {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS achievement(" +
@@ -77,6 +85,7 @@ enum class CreateTableSqlEnum {
                     "PRIMARY KEY (id))"
         }
     },
+    @SerializedName("PACKAGE_CATEGORIES_TYPE")
     PACKAGE_CATEGORIES_TYPE{
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS packageCategoriesType(id INT AUTO_INCREMENT,type VARCHAR(45),PRIMARY KEY(id))"

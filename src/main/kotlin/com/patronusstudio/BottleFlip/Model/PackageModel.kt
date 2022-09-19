@@ -16,4 +16,5 @@ data class PackageModel(
     @JsonProperty("questions") val questions: String? = null,
     @JsonProperty("version") val version: Int? = 1,
     @JsonProperty("updatedTime") val updatedTime: Long? = null,
+    @JsonProperty("packageCategory") val packageCategory: Int? = null,
 ):BaseModel()
