@@ -96,7 +96,7 @@ enum class TableTypeEnum {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS userComment(id INT AUTO_INCREMENT,username VARCHAR(45)," +
                     "comment VARCHAR(255),starCount INT,sendDate TIMESTAMP, appVersion VARCHAR(45)," +
-                    "deviceType VARCHAR(1) ,deviceModel VARCHAR(255), PRIMARY KEY(id))"
+                    "deviceType VARCHAR(100) ,deviceModel VARCHAR(255), PRIMARY KEY(id))"
         }
     };
 
