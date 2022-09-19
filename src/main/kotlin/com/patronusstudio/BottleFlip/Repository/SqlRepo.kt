@@ -43,7 +43,11 @@ class SqlRepo {
             val listType: Type = object : TypeToken<List<T>>(){}.type
             val json = Gson().toJson(result)
             val keyPairBoolDataList: List<T> = Gson().fromJson(json, listType)
-            BaseSealed.Succes(keyPairBoolDataList)
+            if(keyPairBoolDataList.isEmpty()){
+                BaseSealed.Error(mapOf(), SqlErrorType.EMPTY_RESULT_DATA)
+            } else{
+                BaseSealed.Succes(keyPairBoolDataList)
+            }
         } catch (e: DataAccessException) {
             BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
         }

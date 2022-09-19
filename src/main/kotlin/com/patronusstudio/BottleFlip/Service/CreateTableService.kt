@@ -25,6 +25,7 @@ class CreateTableService {
             TableTypeEnum.BOTTLES -> TableTypeEnum.BOTTLES.getCreateSql()
             TableTypeEnum.ACHIEVEMENT -> TableTypeEnum.ACHIEVEMENT.getCreateSql()
             TableTypeEnum.PACKAGE_CATEGORIES_TYPE -> TableTypeEnum.PACKAGE_CATEGORIES_TYPE.getCreateSql()
+            TableTypeEnum.USER_COMMENT -> TableTypeEnum.USER_COMMENT.getCreateSql()
         }
         val result = sqlRepo.setData(sql)
         return if(result is BaseSealed.Error){
