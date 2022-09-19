@@ -40,10 +40,9 @@ class SqlRepo {
     fun <T : BaseModel> getDataForList(sqlQuery: String, classType: Class<T>): BaseSealed {
         return try {
             val result = jdbcConnection.queryForList(sqlQuery)
-
-            val listType: Type = TypeToken.getParameterized(ArrayList::class.java, classType).type
-            val keyPairBoolDataList: List<T> = Gson().fromJson(Gson().toJson(result), listType)
-
+            val listType: Type = object : TypeToken<List<T>>(){}.type
+            val json = Gson().toJson(result)
+            val keyPairBoolDataList: List<T> = Gson().fromJson(json, listType)
             BaseSealed.Succes(keyPairBoolDataList)
         } catch (e: DataAccessException) {
             BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
