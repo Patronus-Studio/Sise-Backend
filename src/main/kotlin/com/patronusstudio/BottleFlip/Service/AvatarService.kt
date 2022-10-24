@@ -1,0 +1,51 @@
+package com.patronusstudio.BottleFlip.Service
+
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.patronusstudio.BottleFlip.Base.BaseResponse
+import com.patronusstudio.BottleFlip.Base.BaseSealed
+import com.patronusstudio.BottleFlip.Model.AvatarModel
+import com.patronusstudio.BottleFlip.Model.ErrorResponse
+import com.patronusstudio.BottleFlip.Model.SuccesResponse
+import com.patronusstudio.BottleFlip.Repository.SqlRepo
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+
+@Service
+class AvatarService {
+
+    @Autowired
+    private lateinit var sqlRepo: SqlRepo
+
+    fun getAllAvatar(): BaseResponse {
+        val sqlQuery = "Select * from avatars order by id asc"
+        val sqlResult = sqlRepo.getDataForList(sqlQuery, AvatarModel::class.java)
+        return if (sqlResult is BaseSealed.Succes) {
+            val parsedList = Gson().fromJson<List<AvatarModel>>(Gson().toJson(sqlResult.data),object :
+                TypeToken<List<AvatarModel>>(){}.type)
+            val selectableAvatars = parsedList.filter {
+                it.isSelectable == 1
+            }
+            SuccesResponse(data = selectableAvatars, status = HttpStatus.OK)
+        } else ErrorResponse(
+            status = HttpStatus.NOT_ACCEPTABLE,
+            message = "Avatarlar getirilirken hata oluştu"
+        )
+    }
+
+    fun insertAvatar(model: AvatarModel): BaseResponse {
+        val insertSqlQuery = "Insert into avatars(imageUrl,isSelectable,starCount) " +
+                "VALUES(\"${model.imageUrl}\",${model.isSelectable},${model.starCount})"
+        val result = sqlRepo.setData(insertSqlQuery)
+        return if (result is BaseSealed.Succes) {
+            SuccesResponse(data = "Yeni avatar eklendi.", status = HttpStatus.OK)
+        } else ErrorResponse(
+            "Avatar eklenirken bir hata oluştu.",
+            status = HttpStatus.NOT_ACCEPTABLE
+        )
+    }
+
+}
