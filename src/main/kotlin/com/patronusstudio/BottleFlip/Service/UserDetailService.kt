@@ -3,6 +3,7 @@ package com.patronusstudio.BottleFlip.Authentication
 import com.patronusstudio.BottleFlip.Base.BaseResponse
 import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
+import com.patronusstudio.BottleFlip.Model.LoginRequest
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
@@ -89,9 +90,9 @@ class MyUserDetailsService : UserDetailsService {
             if (emailResponse is ErrorResponse) {
                 return emailResponse
             }
-            val insertSql = "INSERT INTO users(username,email,gender,password,userType,token) VALUES(" +
+            val insertSql = "INSERT INTO users(username,email,gender,password,userType,authToken,pushToken) VALUES(" +
                     "\"${userModel.username}\",\"${userModel.email}\",\"${userModel.gender}\",\"${userModel.password}\"," +
-                    "\"${userModel.userType}\",\"${userModel.token}\")"
+                    "\"${userModel.userType}\",\"${userModel.authToken}\",\"${userModel.pushToken}\")"
 
             val res = sqlRepo.setData(insertSql)
             if (res is BaseSealed.Succes) {
@@ -118,4 +119,13 @@ class MyUserDetailsService : UserDetailsService {
         )
     }
 
+    fun updateAuthToken(token:String,loginRequest: LoginRequest): BaseResponse{
+        val sql = "UPDATE users SET authToken = \"$token\" where username = \"${loginRequest.username}\""
+        val updateResult = sqlRepo.setData(sql)
+        return if (updateResult is BaseSealed.Succes)
+            SuccesResponse(status = HttpStatus.OK, message = null)
+        else ErrorResponse(
+            "Token güncellenirken bir hatayla karşılaşıldı", HttpStatus.NOT_ACCEPTABLE
+        )
+    }
 }

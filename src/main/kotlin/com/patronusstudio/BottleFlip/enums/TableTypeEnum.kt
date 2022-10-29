@@ -12,7 +12,8 @@ enum class TableTypeEnum {
                     "password VARCHAR(45) NOT NULL," +
                     "userType VARCHAR(1) NOT NULL," +
                     "createdTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
-                    "token VARCHAR(255)," +
+                    "authToken VARCHAR(255)," +
+                    "pushToken VARCHAR(255)," +
                     "PRIMARY KEY (username))"
         }
     },

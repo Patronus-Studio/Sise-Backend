@@ -31,13 +31,19 @@ class AuthController {
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): BaseResponse {
         return try {
-            val authentication = authenticationManager.authenticate(
+            authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken(
                     loginRequest.username, loginRequest.password
                 )
             )
             val token = tokenManager.generateToken(loginRequest.username)
-            SuccesResponse(token, HttpStatus.OK)
+            val updateTokenResult = userDetailsService.updateAuthToken(token,loginRequest)
+            if(updateTokenResult is SuccesResponse){
+                SuccesResponse(token, HttpStatus.OK)
+            }
+            else{
+                updateTokenResult
+            }
         } catch (e: Exception) {
             ErrorResponse(e.localizedMessage, HttpStatus.NOT_ACCEPTABLE)
         }
