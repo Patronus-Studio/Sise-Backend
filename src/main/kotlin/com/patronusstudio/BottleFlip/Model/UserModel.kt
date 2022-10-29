@@ -10,6 +10,6 @@ data class UserModel(
     @SerializedName("password") val password: String,
     @SerializedName("userType") val userType: String = "0",
     @SerializedName("createdTime") val createdTime: Long? = null,
-    @SerializedName("authToken") val authToken: String,
-    @SerializedName("pushToken") val pushToken: String,
+    @SerializedName("authToken") val authToken: String? = null,
+    @SerializedName("pushToken") val pushToken: String? = null,
 ):BaseModel()
