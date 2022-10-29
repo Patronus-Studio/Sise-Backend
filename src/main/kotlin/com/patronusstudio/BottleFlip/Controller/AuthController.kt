@@ -37,11 +37,10 @@ class AuthController {
                 )
             )
             val token = tokenManager.generateToken(loginRequest.username)
-            val updateTokenResult = userDetailsService.updateAuthToken(token,loginRequest)
-            if(updateTokenResult is SuccesResponse){
+            val updateTokenResult = userDetailsService.updateAuthToken(token, loginRequest)
+            if (updateTokenResult is SuccesResponse) {
                 SuccesResponse(token, HttpStatus.OK)
-            }
-            else{
+            } else {
                 updateTokenResult
             }
         } catch (e: Exception) {
@@ -61,6 +60,21 @@ class AuthController {
 
     @PostMapping("/register")
     fun register(@RequestBody userModel: UserModel): BaseResponse {
-        return userDetailsService.register(userModel)
+        val registerResult = userDetailsService.register(userModel)
+        return if (registerResult is SuccesResponse) {
+            val token = tokenManager.generateToken(userModel.username)
+            val updateTokenResult = userDetailsService.updateAuthToken(
+                token, LoginRequest(userModel.username, userModel.password)
+            )
+            return if (updateTokenResult is SuccesResponse) {
+                registerResult.data = registerResult.message
+                registerResult.message = token
+                registerResult
+            } else {
+                updateTokenResult
+            }
+        } else {
+            registerResult
+        }
     }
 }

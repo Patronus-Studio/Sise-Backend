@@ -5,7 +5,7 @@ import com.patronusstudio.BottleFlip.Base.BaseResponse
 import org.springframework.http.HttpStatus
 
 data class SuccesResponse(
-    @JsonProperty("token") val message: String? = null,
+    @JsonProperty("token") var message: String? = null,
     override val status: HttpStatus,
-    val data: Any? = null
+    var data: Any? = null
 ) : BaseResponse()
