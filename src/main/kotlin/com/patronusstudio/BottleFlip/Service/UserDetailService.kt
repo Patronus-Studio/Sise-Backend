@@ -109,7 +109,7 @@ class MyUserDetailsService : UserDetailsService {
     private fun userGameInfoSetData(username: String): BaseResponse {
         val tableInsertSql = "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles," +
                 "currentAvatar, buyedAvatars,achievement)" +
-                " VALUES(\"$username}\",0,0,0,null,null,\"0\",null,null)"
+                " VALUES(\"$username\",0,0,0,null,null,\"0\",null,null)"
 
         val insertDataResult = sqlRepo.setData(tableInsertSql)
         return if (insertDataResult is BaseSealed.Succes)
