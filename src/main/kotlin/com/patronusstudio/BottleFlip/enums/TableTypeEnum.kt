@@ -17,6 +17,7 @@ enum class TableTypeEnum {
                     "PRIMARY KEY (username))"
         }
     },
+
     @SerializedName("USER_GAME_INFO")
     USER_GAME_INFO {
         override fun getCreateSql(): String {
@@ -25,6 +26,7 @@ enum class TableTypeEnum {
                     "buyedAvatars VARCHAR(255),achievement VARCHAR(255), PRIMARY KEY (username) )"
         }
     },
+
     @SerializedName("LEVELS")
     LEVELS {
         override fun getCreateSql(): String {
@@ -33,6 +35,7 @@ enum class TableTypeEnum {
                     "PRIMARY KEY (id))"
         }
     },
+
     @SerializedName("PACKAGES")
     PACKAGES {
         override fun getCreateSql(): String {
@@ -53,6 +56,7 @@ enum class TableTypeEnum {
                     "PRIMARY KEY (id))"
         }
     },
+
     @SerializedName("BOTTLES")
     BOTTLES {
         override fun getCreateSql(): String {
@@ -73,6 +77,7 @@ enum class TableTypeEnum {
                     "PRIMARY KEY (id))"
         }
     },
+
     @SerializedName("ACHIEVEMENT")
     ACHIEVEMENT {
         override fun getCreateSql(): String {
@@ -86,19 +91,27 @@ enum class TableTypeEnum {
                     "PRIMARY KEY (id))"
         }
     },
+
     @SerializedName("PACKAGE_CATEGORIES_TYPE")
-    PACKAGE_CATEGORIES_TYPE{
+    PACKAGE_CATEGORIES_TYPE {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS packageCategoriesType(id INT AUTO_INCREMENT,type VARCHAR(45),PRIMARY KEY(id))"
         }
     },
+
     @SerializedName("USER_COMMENT")
-    USER_COMMENT{
+    USER_COMMENT {
         override fun getCreateSql(): String {
             return "CREATE TABLE IF NOT EXISTS userComment(id INT AUTO_INCREMENT,username VARCHAR(45)," +
                     "comment VARCHAR(255),starCount INT,sendDate TIMESTAMP, appVersion VARCHAR(45)," +
                     "deviceType VARCHAR(100) ,deviceModel VARCHAR(255), PRIMARY KEY(id))"
         }
+    },
+    @SerializedName("AVATAR")
+    AVATAR {
+        override fun getCreateSql(): String =
+            "CREATE TABLE IF NOT EXISTS avatars(id INT AUTO_INCREMENT PRIMARY KEY,imageUrl VARCHAR(255),isSelectable Int(1), starCount INT)"
+
     };
 
     abstract fun getCreateSql(): String
