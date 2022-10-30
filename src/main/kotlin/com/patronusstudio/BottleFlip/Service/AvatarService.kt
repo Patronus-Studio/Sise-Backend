@@ -9,6 +9,7 @@ import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserGameInfo
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
+import com.patronusstudio.BottleFlip.enums.BuyedStatu
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -20,7 +21,12 @@ class AvatarService {
     @Autowired
     private lateinit var sqlRepo: SqlRepo
 
-    fun getAllAvatar(): BaseResponse {
+    fun getAllAvatar(username:String): BaseResponse {
+        val customerAvatarSql = "Select buyedAvatars from userGameInfo where username = \"$username\""
+        val buyedAvatarsResult = sqlRepo.getBasicData(customerAvatarSql)
+        if(buyedAvatarsResult is BaseSealed.Error){
+            ErrorResponse("Kullanıcı bilgileri getirilirken bir hata oluştu.",HttpStatus.NOT_ACCEPTABLE)
+        }
         val sqlQuery = "Select * from avatars order by id asc"
         val sqlResult = sqlRepo.getDataForList(sqlQuery, AvatarModel::class.java)
         return if (sqlResult is BaseSealed.Succes) {
@@ -29,6 +35,17 @@ class AvatarService {
                     TypeToken<List<AvatarModel>>() {}.type)
             val selectableAvatars = parsedList.filter {
                 it.isSelectable == 1
+            }
+            val avatars = ((buyedAvatarsResult as BaseSealed.Succes).data as String).split(";")
+            selectableAvatars.forEach { selectableAvatar ->
+                avatars.forEach {
+                    if(selectableAvatar.id.toString() == it){
+                        selectableAvatar.buyedStatu = BuyedStatu.BUYED
+                    }
+                }
+                if(selectableAvatar.buyedStatu != BuyedStatu.BUYED){
+                    selectableAvatar.buyedStatu = BuyedStatu.NON_BUYED
+                }
             }
             SuccesResponse(data = selectableAvatars, status = HttpStatus.OK)
         } else ErrorResponse(

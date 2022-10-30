@@ -14,8 +14,8 @@ class AvatarController {
     private lateinit var avatarService: AvatarService
 
     @GetMapping("/getAvatars")
-    fun getAllAvatar():BaseResponse{
-        return avatarService.getAllAvatar()
+    fun getAllAvatar(@RequestParam username:String):BaseResponse{
+        return avatarService.getAllAvatar(username)
     }
 
     @PostMapping("/insertAvatar")
