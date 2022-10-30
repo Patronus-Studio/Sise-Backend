@@ -5,6 +5,7 @@ import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserGameInfo
+import com.patronusstudio.BottleFlip.Model.UserModel
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -16,8 +17,14 @@ class UserGameInfoService {
     @Autowired
     private lateinit var sqlRepo: SqlRepo
 
-    fun getUserGameInfo(username: String): BaseResponse {
-        val sql = "Select * From userGameInfo Where username = \"$username\""
+    fun getUserGameInfo(authToken: String): BaseResponse {
+        val getUserNameSql = "Select username,authToken from users where authToken = \"$authToken\""
+        val usernameResult = sqlRepo.getDataForObject(getUserNameSql,UserModel::class.java)
+        if(usernameResult is BaseSealed.Error){
+            return  ErrorResponse("Kullanıcı adı bulunamadı.",HttpStatus.NOT_ACCEPTABLE)
+        }
+        val userModel = (usernameResult as BaseSealed.Succes).data as UserModel
+        val sql = "Select * From userGameInfo Where username = \"${userModel.username}\""
         val result = sqlRepo.getDataForObject(sql, UserGameInfo::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)

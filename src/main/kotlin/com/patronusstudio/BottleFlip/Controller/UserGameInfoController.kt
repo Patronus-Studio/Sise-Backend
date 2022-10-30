@@ -24,8 +24,8 @@ class UserGameInfoController {
     private lateinit var userGameInfoService: UserGameInfoService
 
     @PostMapping("/getUserGameInfo")
-    fun getUserInfoService(@RequestParam username: String): BaseResponse {
-        return userGameInfoService.getUserGameInfo(username)
+    fun getUserInfoService(@RequestParam authToken: String): BaseResponse {
+        return userGameInfoService.getUserGameInfo(authToken)
     }
 
     @PostMapping("/updateCurrentAvatar")

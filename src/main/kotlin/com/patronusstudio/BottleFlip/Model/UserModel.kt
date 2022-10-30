@@ -5,9 +5,9 @@ import com.patronusstudio.BottleFlip.Base.BaseModel
 
 data class UserModel(
     @SerializedName("username") val username: String,
-    @SerializedName("email") val email: String,
-    @SerializedName("gender") val gender: String,
-    @SerializedName("password") val password: String,
+    @SerializedName("email") val email: String? = null,
+    @SerializedName("gender") val gender: String? = null,
+    @SerializedName("password") val password: String? = null,
     @SerializedName("userType") val userType: String = "0",
     @SerializedName("createdTime") val createdTime: Long? = null,
     @SerializedName("authToken") val authToken: String? = null,

@@ -64,7 +64,7 @@ class AuthController {
         return if (registerResult is SuccesResponse) {
             val token = tokenManager.generateToken(userModel.username)
             val updateTokenResult = userDetailsService.updateAuthToken(
-                token, LoginRequest(userModel.username, userModel.password)
+                token, LoginRequest(userModel.username, userModel.password!!)
             )
             return if (updateTokenResult is SuccesResponse) {
                 registerResult.data = registerResult.message
