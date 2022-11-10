@@ -44,8 +44,8 @@ class PackageController {
     }
 
     @PostMapping("/addPackageCategory")
-    fun addPackageCategory(@RequestParam type:String):BaseResponse{
-        return packageService.addPackageCategory(type)
+    fun addPackageCategory(@RequestBody model: PackageCategoriesTypeModel):BaseResponse{
+        return packageService.addPackageCategory(model)
     }
 
     @PostMapping("/updatePackageCategory")

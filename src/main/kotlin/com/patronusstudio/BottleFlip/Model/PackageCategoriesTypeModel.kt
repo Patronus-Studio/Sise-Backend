@@ -1,11 +1,13 @@
 package com.patronusstudio.BottleFlip.Model
 
-import com.google.gson.annotations.SerializedName
 import com.patronusstudio.BottleFlip.Base.BaseModel
 
 data class PackageCategoriesTypeModel(
-    @SerializedName("id")
-    val id:Int,
-    @SerializedName("type")
-    val type:String
+    val id:Int = 0,
+    val name:String,
+    val activeBtnColor:String,
+    val passiveBtnColor:String,
+    val activeTextColor:String,
+    val passiveTextColor:String,
+    val isSelected:String
 ): BaseModel()

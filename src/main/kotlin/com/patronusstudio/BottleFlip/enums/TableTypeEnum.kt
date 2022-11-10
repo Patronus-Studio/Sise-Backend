@@ -95,7 +95,8 @@ enum class TableTypeEnum {
     @SerializedName("PACKAGE_CATEGORIES_TYPE")
     PACKAGE_CATEGORIES_TYPE {
         override fun getCreateSql(): String {
-            return "CREATE TABLE IF NOT EXISTS packageCategoriesType(id INT AUTO_INCREMENT,type VARCHAR(45),PRIMARY KEY(id))"
+            return "CREATE TABLE IF NOT EXISTS packageCategoriesType(id INT AUTO_INCREMENT,name VARCHAR(45),activeBtnColor VARCHAR(10),passiveBtnColor VARCHAR(10),activeTextColor VARCHAR(10)," +
+                    "passiveTextColor VARCHAR(10),isSelected VARCHAR(1),PRIMARY KEY(id))"
         }
     },
 
@@ -107,6 +108,7 @@ enum class TableTypeEnum {
                     "deviceType VARCHAR(100) ,deviceModel VARCHAR(255), PRIMARY KEY(id))"
         }
     },
+
     @SerializedName("AVATAR")
     AVATAR {
         override fun getCreateSql(): String =

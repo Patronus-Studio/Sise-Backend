@@ -20,7 +20,7 @@ class PackageService {
 
     fun getPackagesFromUsername(username: String): BaseResponse {
         val sql = "Select * From packages Where username = \"$username\""
-        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
+        val result = sqlRepo.getDataForList<PackageModel>(sql, PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -28,9 +28,9 @@ class PackageService {
         }
     }
 
-    fun getPackagesFromPackageName(packageName:String):BaseResponse{
+    fun getPackagesFromPackageName(packageName: String): BaseResponse {
         val sql = "Select * From packages Where name = \"$packageName\""
-        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
+        val result = sqlRepo.getDataForList<PackageModel>(sql, PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -38,9 +38,9 @@ class PackageService {
         }
     }
 
-    fun getPackagesFromMostLike():BaseResponse{
+    fun getPackagesFromMostLike(): BaseResponse {
         val sql = "Select * from packages order by numberOfLike desc"
-        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
+        val result = sqlRepo.getDataForList<PackageModel>(sql, PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -48,9 +48,9 @@ class PackageService {
         }
     }
 
-    fun getPackagesFromMostDownload():BaseResponse{
+    fun getPackagesFromMostDownload(): BaseResponse {
         val sql = "Select * from packages order by numberOfDownload desc"
-        val result = sqlRepo.getDataForList<PackageModel>(sql,PackageModel::class.java)
+        val result = sqlRepo.getDataForList<PackageModel>(sql, PackageModel::class.java)
         return if (result is BaseSealed.Succes) {
             SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
         } else {
@@ -75,28 +75,38 @@ class PackageService {
         }
     }
 
-    fun getAllPackageCategories():BaseResponse{
+    fun getAllPackageCategories(): BaseResponse {
         val sql = "Select * From packageCategoriesType order by id asc"
-        val categoryModel = sqlRepo.getDataForList(sql,PackageCategoriesTypeModel::class.java)
-        if(categoryModel is BaseSealed.Error){
+        val categoryModel = sqlRepo.getDataForList(sql, PackageCategoriesTypeModel::class.java)
+        if (categoryModel is BaseSealed.Error) {
             return ErrorResponse("Paket kategorileri çekilirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
         }
         return SuccesResponse(data = (categoryModel as BaseSealed.Succes).data, status = HttpStatus.OK)
     }
 
-    fun addPackageCategory(type:String):BaseResponse{
-        val sql = "INSERT INTO packageCategoriesType(type) VALUES (\"$type\")"
+    fun addPackageCategory(model: PackageCategoriesTypeModel): BaseResponse {
+        val sql = "INSERT INTO packageCategoriesType(name,activeTextColor,activeBtnColor,passiveBtnColor," +
+                "passiveTextColor,isSelected) VALUES (\"${model.name}\",\"${model.activeTextColor}\"," +
+                "\"${model.activeBtnColor}\",\"${model.passiveBtnColor}\",\"${model.passiveTextColor}\"," +
+                "\"${model.isSelected}\")"
         val result = sqlRepo.setData(sql)
-        if(result is BaseSealed.Error){
+        if (result is BaseSealed.Error) {
             return ErrorResponse("Kategori eklenirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
         }
         return SuccesResponse("Ekleme başarılı", HttpStatus.OK)
     }
 
-    fun updatePackageCategory(packageCategoryModel:PackageCategoriesTypeModel):BaseResponse{
-        val sql = "UPDATE packageCategoriesType SET type = \"${packageCategoryModel.type}\" WHERE id = ${packageCategoryModel.id} "
+    fun updatePackageCategory(packageCategoryModel: PackageCategoriesTypeModel): BaseResponse {
+        val sql =
+            "UPDATE packageCategoriesType SET name = \"${packageCategoryModel.name}\"," +
+                    "activeBtnColor = \"${packageCategoryModel.activeBtnColor}\"," +
+                    "activeTextColor = \"${packageCategoryModel.activeTextColor}\"," +
+                    "passiveBtnColor = \"${packageCategoryModel.passiveBtnColor}\"," +
+                    "passiveTextColor = \"${packageCategoryModel.passiveTextColor}\"," +
+                    "isSelected = \"${packageCategoryModel.isSelected}\"" +
+                    "WHERE id = ${packageCategoryModel.id} "
         val result = sqlRepo.setData(sql)
-        if(result is BaseSealed.Error){
+        if (result is BaseSealed.Error) {
             return ErrorResponse("Kategori düzenlenirken bir hata oluştu.", HttpStatus.NOT_ACCEPTABLE)
         }
         return SuccesResponse("Paket kategorisi düzenlendi.", HttpStatus.OK)
