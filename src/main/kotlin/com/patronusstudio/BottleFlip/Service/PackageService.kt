@@ -111,4 +111,14 @@ class PackageService {
         }
         return SuccesResponse("Paket kategorisi düzenlendi.", HttpStatus.OK)
     }
+
+    fun getPackagesFromPackageCategories(packageCategory: Int): BaseResponse {
+        val sql = "Select * From packages Where packageCategory = $packageCategory"
+        val result = sqlRepo.getDataForList<PackageModel>(sql, PackageModel::class.java)
+        return if (result is BaseSealed.Succes) {
+            SuccesResponse(data = result.data, status = HttpStatus.OK, message = null)
+        } else {
+            ErrorResponse("Paket bulunamadı", HttpStatus.NOT_ACCEPTABLE)
+        }
+    }
 }

@@ -52,4 +52,9 @@ class PackageController {
     fun updatePackageCategory(@RequestBody model:PackageCategoriesTypeModel):BaseResponse{
         return packageService.updatePackageCategory(model)
     }
+
+    @GetMapping("/getPackageByCategoryName")
+    fun getAllPackageCategories(@RequestParam packageCategory:Int):BaseResponse{
+        return packageService.getPackagesFromPackageCategories(packageCategory)
+    }
 }
