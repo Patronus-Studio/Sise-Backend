@@ -18,5 +18,4 @@ class DistrictController {
     fun fetchAllDistrict(): BaseResponse {
         return districtService.getDistricts()
     }
-
 }
