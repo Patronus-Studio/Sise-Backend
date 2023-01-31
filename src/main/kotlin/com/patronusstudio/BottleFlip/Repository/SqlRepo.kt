@@ -6,10 +6,12 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.patronusstudio.BottleFlip.Base.BaseModel
 import com.patronusstudio.BottleFlip.Base.BaseSealed
+import com.patronusstudio.BottleFlip.Temp.models.CustomerModel
 import com.patronusstudio.BottleFlip.enums.SqlErrorType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.jdbc.core.BeanPropertyRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.reflect.Type
@@ -53,6 +55,25 @@ class SqlRepo {
         }
     }
 
+    fun <T : BaseModel> getDataForListWithReturnList(sqlQuery: String, classType: Class<T>): List<T> {
+        return try {
+            val result = jdbcConnection.queryForList(sqlQuery)
+            val listType: Type = object : TypeToken<List<T>>(){}.type
+            val json = Gson().toJson(result)
+            return Gson().fromJson(json, listType)
+        } catch (e: DataAccessException) {
+            listOf<T>()
+        }
+    }
+
+    fun getList(sqlQuery: String): List<CustomerModel> {
+        return try {
+            return jdbcConnection.query(sqlQuery,BeanPropertyRowMapper(CustomerModel::class.java))
+
+        } catch (e: DataAccessException) {
+            listOf<CustomerModel>()
+        }
+    }
 
     fun getBasicData(sqlQuery: String): BaseSealed {
         return try {
