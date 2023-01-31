@@ -26,4 +26,8 @@ class DistrictService {
         }
     }
 
+    fun getDistrictName(id:String):String{
+        val sql = "Select ilce_adi from pk_distrinct where ilce_id =$id"
+        return (sqlRepo.getBasicData(sql) as BaseSealed.Succes).data as String
+    }
 }

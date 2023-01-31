@@ -15,6 +15,12 @@ class CustomerService {
     @Autowired
     private lateinit var sqlRepo: SqlRepo
 
+    @Autowired
+    private lateinit var airportService: AirportService
+
+    @Autowired
+    private lateinit var districtService: DistrictService
+
     fun getAllCustomers(): BaseResponse {
         val sql = "Select * From pk_customer"
         return try {
@@ -25,9 +31,11 @@ class CustomerService {
                         it.reservation_create_time!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
                 if (it.boarding_date != null)
                     it.boarding_date = it.boarding_date!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                it.airport_id = airportService.getAirportName(it.airport_id.toString())
+                it.distrinct_id = districtService.getDistrictName(it.distrinct_id.toString())
             }
             SuccesResponse(data = result, status = HttpStatus.OK, message = null)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             ErrorResponse(status = HttpStatus.NOT_ACCEPTABLE, message = "Sorguda bir hata oluştu")
         }
     }

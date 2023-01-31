@@ -26,4 +26,9 @@ class AirportService {
         }
     }
 
+    fun getAirportName(id:String):String{
+        val sql = "Select airport_name from pk_airport where airport_id =$id"
+        return (sqlRepo.getBasicData(sql) as BaseSealed.Succes).data as String
+    }
+
 }
