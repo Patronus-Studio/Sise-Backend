@@ -19,4 +19,13 @@ class CustomerController {
         return customerService.getAllCustomers()
     }
 
+    @GetMapping("/getAllActiveCustomers")
+    fun getAllActiveCustomers(): BaseResponse {
+        return customerService.getAllActiveCustomers()
+    }
+
+    @GetMapping("/getAllDeactiveCustomers")
+    fun getAllDeactiveCustomers(): BaseResponse {
+        return customerService.getAllDeactiveCustomers()
+    }
 }

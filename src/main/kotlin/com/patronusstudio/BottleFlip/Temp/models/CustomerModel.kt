@@ -14,27 +14,30 @@ class CustomerModel : BaseModel() {
     @JsonProperty
     var email: String? = null
     @JsonProperty
-    var phone_number: String? = null
+    var phoneNumber: String? = null
     @JsonProperty
-    var name_surname: String? = null
+    var nameSurname: String? = null
     @JsonProperty
-    var airport_id: String? = null
+    var whichAirport: String? = null
     @JsonProperty
-    var distrinct_id: String? = null
+    var whichDistrinct: String? = null
     @JsonProperty
-    var package_size: String? = null
+    var startDestination:String? = null
     @JsonProperty
-    var boarding_date: String?= null
+    var numberOfSuitcases: String? = null
     @JsonProperty
-    var flight_number: String? = null
+    var boardingDate: String?= null
     @JsonProperty
-    var child_seat_size: String? = null
+    var flightNumber: String? = null
     @JsonProperty
-    var customer_size: String? = null
+    var numberOfChildSeats: String? = null
     @JsonProperty
-    var reservation_create_time: String?= null
+    var numberOfCustomer: String? = null
+    @JsonProperty
+    var reservationCreatedTime: String?= null
     @JsonProperty
     var status: String? = null
+
 }
 
 enum class CustomerStatus

@@ -26,17 +26,57 @@ class CustomerService {
         return try {
             val result = sqlRepo.getList(sql)
             result.forEach {
-                if (it.reservation_create_time != null)
-                    it.reservation_create_time =
-                        it.reservation_create_time!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
-                if (it.boarding_date != null)
-                    it.boarding_date = it.boarding_date!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
-                it.airport_id = airportService.getAirportName(it.airport_id.toString())
-                it.distrinct_id = districtService.getDistrictName(it.distrinct_id.toString())
+                if (it.reservationCreatedTime != null)
+                    it.reservationCreatedTime =
+                        it.reservationCreatedTime!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                if (it.boardingDate != null)
+                    it.boardingDate = it.boardingDate!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                it.whichAirport = airportService.getAirportName(it.whichAirport.toString())
+                it.whichDistrinct = districtService.getDistrictName(it.whichDistrinct.toString())
             }
             SuccesResponse(data = result, status = HttpStatus.OK, message = null)
         } catch (e: Exception) {
             ErrorResponse(status = HttpStatus.NOT_ACCEPTABLE, message = "Sorguda bir hata oluştu")
         }
     }
+
+    fun getAllActiveCustomers(): BaseResponse{
+        val sql = "Select * From pk_customer where status = 1"
+        return try {
+            val result = sqlRepo.getList(sql)
+            result.forEach {
+                if (it.reservationCreatedTime != null)
+                    it.reservationCreatedTime =
+                        it.reservationCreatedTime!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                if (it.boardingDate != null)
+                    it.boardingDate = it.boardingDate!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                it.whichAirport = airportService.getAirportName(it.whichAirport.toString())
+                it.whichDistrinct = districtService.getDistrictName(it.whichDistrinct.toString())
+            }
+            SuccesResponse(data = result, status = HttpStatus.OK, message = null)
+        } catch (e: Exception) {
+            ErrorResponse(status = HttpStatus.NOT_ACCEPTABLE, message = "Sorguda bir hata oluştu")
+        }
+    }
+
+    fun getAllDeactiveCustomers(): BaseResponse{
+        val sql = "Select * From pk_customer where status = 0"
+        return try {
+            val result = sqlRepo.getList(sql)
+            result.forEach {
+                if (it.reservationCreatedTime != null)
+                    it.reservationCreatedTime =
+                        it.reservationCreatedTime!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                if (it.boardingDate != null)
+                    it.boardingDate = it.boardingDate!!.dropLast(2).toLocalDateTime().plusHours(3).toString()
+                it.whichAirport = airportService.getAirportName(it.whichAirport.toString())
+                it.whichDistrinct = districtService.getDistrictName(it.whichDistrinct.toString())
+            }
+            SuccesResponse(data = result, status = HttpStatus.OK, message = null)
+        } catch (e: Exception) {
+            ErrorResponse(status = HttpStatus.NOT_ACCEPTABLE, message = "Sorguda bir hata oluştu")
+        }
+    }
+
+
 }
