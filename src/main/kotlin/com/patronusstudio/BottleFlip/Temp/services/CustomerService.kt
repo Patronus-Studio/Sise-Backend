@@ -1,9 +1,11 @@
 package com.patronusstudio.BottleFlip.Temp.services
 
 import com.patronusstudio.BottleFlip.Base.BaseResponse
+import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
+import com.patronusstudio.BottleFlip.Temp.models.CustomerRequestModel
 import com.patronusstudio.BottleFlip.Temp.models.toLocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -78,5 +80,14 @@ class CustomerService {
         }
     }
 
+    fun addNewCustomer(customerRequestModel: CustomerRequestModel):BaseSealed{
+        val sql = "Insert Into pk_customer(boardingDate,email,flightNumber,nameSurname,numberOfChildSeats," +
+                "numberOfCustomer,numberOfSuitcases,phoneNumber,startDestination,whichAirport,whichDistrinct) VALUES(" +
+                "\"${customerRequestModel.boardingDate}\",\"${customerRequestModel.email}\",\"${customerRequestModel.flightNumber}\"," +
+                "\"${customerRequestModel.nameSurname}\",\"${customerRequestModel.numberOfChildSeats}\",\"${customerRequestModel.numberOfCustomer}\"," +
+                "\"${customerRequestModel.numberOfSuitcases}\",\"${customerRequestModel.phoneNumber}\",\"${customerRequestModel.startDestination}\"," +
+                "\"${customerRequestModel.whichAirport}\",\"${customerRequestModel.whichDistrinct}\")"
+        return sqlRepo.setData(sql)
+    }
 
 }
