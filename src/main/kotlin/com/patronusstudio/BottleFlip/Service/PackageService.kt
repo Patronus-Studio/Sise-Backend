@@ -121,4 +121,16 @@ class PackageService {
             ErrorResponse("Paket bulunamadı", HttpStatus.NOT_ACCEPTABLE)
         }
     }
+
+    fun updatePackageNumberOfDownload(packageId:Int):BaseResponse{
+        val sql = "Select numberOfDownload From packages Where id = $packageId"
+        val result = sqlRepo.getBasicData(sql)
+        if(result is BaseSealed.Succes){
+            val numberOfDownload = (result.data as String).toInt() + 1
+            val updateSql = "Update packages SET numberOfDownload = $numberOfDownload where id = $packageId"
+            sqlRepo.setData(updateSql)
+            return SuccesResponse(status = HttpStatus.OK)
+        }
+        else return ErrorResponse(status = HttpStatus.NOT_ACCEPTABLE, message = "İndirme sayısı güncellenemedi")
+    }
 }

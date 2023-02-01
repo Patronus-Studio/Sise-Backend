@@ -57,4 +57,9 @@ class PackageController {
     fun getAllPackageCategories(@RequestParam packageCategory:Int):BaseResponse{
         return packageService.getPackagesFromPackageCategories(packageCategory)
     }
+
+    @PostMapping("/updatePackageNumberOfDownload")
+    fun updatePackageNumberOfDownload(@RequestParam packageId:Int):BaseResponse{
+        return packageService.updatePackageNumberOfDownload(packageId)
+    }
 }
