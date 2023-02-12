@@ -62,4 +62,9 @@ class PackageController {
     fun updatePackageNumberOfDownload(@RequestParam packageId:Int):BaseResponse{
         return packageService.updatePackageNumberOfDownload(packageId)
     }
+
+    @GetMapping("/getAllPackages")
+    fun getAllPackages():BaseResponse{
+        return packageService.getAllPackages()
+    }
 }

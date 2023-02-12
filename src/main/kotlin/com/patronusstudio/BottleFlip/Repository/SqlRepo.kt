@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.reflect.Type
+import kotlin.reflect.KClass
 
 
 @Repository
@@ -55,17 +56,6 @@ class SqlRepo {
         }
     }
 
-    fun <T : BaseModel> getDataForListWithReturnList(sqlQuery: String, classType: Class<T>): List<T> {
-        return try {
-            val result = jdbcConnection.queryForList(sqlQuery)
-            val listType: Type = object : TypeToken<List<T>>(){}.type
-            val json = Gson().toJson(result)
-            return Gson().fromJson(json, listType)
-        } catch (e: DataAccessException) {
-            listOf<T>()
-        }
-    }
-
     fun getList(sqlQuery: String): List<CustomerModel> {
         return try {
             return jdbcConnection.query(sqlQuery,BeanPropertyRowMapper(CustomerModel::class.java))
@@ -74,6 +64,16 @@ class SqlRepo {
             listOf<CustomerModel>()
         }
     }
+
+    fun <T:BaseModel> getDataForListWithReturnList(sqlQuery: String,clazz: KClass<T>): BaseSealed {
+        return try {
+            val result = jdbcConnection.query(sqlQuery,BeanPropertyRowMapper(clazz.java))
+            BaseSealed.Succes(result)
+        } catch (e: DataAccessException) {
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.EMPTY_RESULT_DATA)
+        }
+    }
+
 
     fun getBasicData(sqlQuery: String): BaseSealed {
         return try {
