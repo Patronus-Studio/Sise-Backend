@@ -199,7 +199,7 @@ fun PackageModel.parsePackageResponseModel(): PackageResponseModel {
 fun String.parseToQuestions(): List<String> {
     val list = mutableListOf<String>()
     this.split(";").forEach {
-        if (it != ";") list.add(it)
+        if (it != ";" && it.isNotEmpty() && it.isNotBlank()) list.add(it)
     }
     return list
 }
