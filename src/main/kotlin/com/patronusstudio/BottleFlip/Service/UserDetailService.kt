@@ -8,6 +8,7 @@ import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
 import com.patronusstudio.BottleFlip.Utils.isEmailValid
+import com.patronusstudio.BottleFlip.enums.GenderEnum
 import com.patronusstudio.BottleFlip.enums.SqlErrorType
 import com.patronusstudio.BottleFlip.enums.TableTypeEnum
 import org.springframework.beans.factory.annotation.Autowired
@@ -91,12 +92,12 @@ class MyUserDetailsService : UserDetailsService {
                 return emailResponse
             }
             val insertSql = "INSERT INTO users(username,email,gender,password,userType,authToken,pushToken) VALUES(" +
-                    "\"${userModel.username}\",\"${userModel.email}\",\"${userModel.gender}\",\"${userModel.password}\"," +
+                    "\"${userModel.username}\",\"${userModel.email}\",\"${userModel.gender?.enumType ?: 0}\",\"${userModel.password}\"," +
                     "\"${userModel.userType}\",\"${userModel.authToken}\",\"${userModel.pushToken}\")"
 
             val res = sqlRepo.setData(insertSql)
             if (res is BaseSealed.Succes) {
-                userGameInfoSetData(userModel.username)
+                userGameInfoSetData(userModel.username,userModel.gender)
                 SuccesResponse(status = HttpStatus.OK, message = "Kayıt başarılı.")
             } else {
                 ErrorResponse("HATA.", HttpStatus.NOT_ACCEPTABLE)
@@ -106,10 +107,10 @@ class MyUserDetailsService : UserDetailsService {
         }
     }
 
-    private fun userGameInfoSetData(username: String): BaseResponse {
+    private fun userGameInfoSetData(username: String,genderEnum: GenderEnum?): BaseResponse {
         val tableInsertSql = "Insert into userGameInfo(username,bottleFlipCount,level,starCount,myPackages,myBottles," +
                 "currentAvatar, buyedAvatars,achievement)" +
-                " VALUES(\"$username\",0,0,0,null,null,\"0\",null,null)"
+                " VALUES(\"$username\",0,0,0,null,null,\"${genderEnum?.enumType ?: 0}\",null,null)"
 
         val insertDataResult = sqlRepo.setData(tableInsertSql)
         return if (insertDataResult is BaseSealed.Succes)
