@@ -7,6 +7,7 @@ import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
 import com.patronusstudio.BottleFlip.Temp.models.CustomerRequestModel
 import com.patronusstudio.BottleFlip.Temp.models.toLocalDateTime
+import com.patronusstudio.BottleFlip.enums.SqlErrorType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -42,7 +43,7 @@ class CustomerService {
         }
     }
 
-    fun getAllActiveCustomers(): BaseResponse{
+    fun getAllActiveCustomers(): BaseResponse {
         val sql = "Select * From pk_customer where status = 1"
         return try {
             val result = sqlRepo.getList(sql)
@@ -61,7 +62,7 @@ class CustomerService {
         }
     }
 
-    fun getAllDeactiveCustomers(): BaseResponse{
+    fun getAllDeactiveCustomers(): BaseResponse {
         val sql = "Select * From pk_customer where status = 0"
         return try {
             val result = sqlRepo.getList(sql)
@@ -80,14 +81,18 @@ class CustomerService {
         }
     }
 
-    fun addNewCustomer(customerRequestModel: CustomerRequestModel):BaseSealed{
+    fun addNewCustomer(customerRequestModel: CustomerRequestModel): BaseSealed {
         val sql = "Insert Into pk_customer(boardingDate,email,flightNumber,nameSurname,numberOfChildSeats," +
-                "numberOfCustomer,numberOfSuitcases,phoneNumber,startDestination,whichAirport,whichDistrinct) VALUES(" +
+                "numberOfCustomer,numberOfSuitcases,phoneNumber,startDestination,whichAirport,whichDistrinct,carType) VALUES(" +
                 "\"${customerRequestModel.boardingDate}\",\"${customerRequestModel.email}\",\"${customerRequestModel.flightNumber}\"," +
                 "\"${customerRequestModel.nameSurname}\",\"${customerRequestModel.numberOfChildSeats}\",\"${customerRequestModel.numberOfCustomer}\"," +
                 "\"${customerRequestModel.numberOfSuitcases}\",\"${customerRequestModel.phoneNumber}\",\"${customerRequestModel.startDestination}\"," +
-                "\"${customerRequestModel.whichAirport}\",\"${customerRequestModel.whichDistrinct}\")"
-        return sqlRepo.setData(sql)
+                "\"${customerRequestModel.whichAirport}\",\"${customerRequestModel.whichDistrinct}\",${customerRequestModel.carType})"
+        val result = sqlRepo.setData(sql)
+        if (result is BaseSealed.Succes) {
+            result.data = HttpStatus.OK
+        } else (result as BaseSealed.Error).sqlErrorType = SqlErrorType.NOT_ACCEPTABLE
+        return result
     }
 
 }

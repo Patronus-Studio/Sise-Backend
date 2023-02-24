@@ -11,5 +11,6 @@ data class CustomerRequestModel(
     val phoneNumber: String,
     val startDestination: String,
     val whichAirport: String,
-    val whichDistrinct: String
+    val whichDistrinct: String,
+    val carType:Int
 )

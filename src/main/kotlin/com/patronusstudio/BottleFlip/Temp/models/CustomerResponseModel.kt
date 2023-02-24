@@ -37,6 +37,8 @@ class CustomerModel : BaseModel() {
     var reservationCreatedTime: String?= null
     @JsonProperty
     var status: String? = null
+    @JsonProperty
+    var carType: Int? = null
 
 }
 

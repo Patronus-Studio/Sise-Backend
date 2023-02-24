@@ -31,6 +31,8 @@ class CustomerController {
 
     @PostMapping("/addCustomer")
     fun addCustomer(@RequestBody customerRequestModel: CustomerRequestModel):BaseSealed{
-        return customerService.addNewCustomer(customerRequestModel)
+        val result =  customerService.addNewCustomer(customerRequestModel)
+
+        return result
     }
 }
