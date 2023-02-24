@@ -1,5 +1,6 @@
 package com.patronusstudio.BottleFlip
 
+import com.google.gson.Gson
 import com.patronusstudio.BottleFlip.Authentication.MyUserDetailsService
 import com.patronusstudio.BottleFlip.Authentication.TokenManager
 import com.patronusstudio.BottleFlip.Base.BaseResponse
@@ -7,6 +8,7 @@ import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.LoginRequest
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Model.UserModel
+import com.patronusstudio.BottleFlip.Service.LogService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
@@ -28,6 +30,9 @@ class AuthController {
     @Autowired
     private lateinit var userDetailsService: MyUserDetailsService
 
+    @Autowired
+    private lateinit var logService: LogService
+
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): BaseResponse {
         return try {
@@ -38,12 +43,14 @@ class AuthController {
             )
             val token = tokenManager.generateToken(loginRequest.username)
             val updateTokenResult = userDetailsService.updateAuthToken(token, loginRequest)
+            logService.setLog(Gson().toJson(loginRequest),Gson().toJson(updateTokenResult))
             if (updateTokenResult is SuccesResponse) {
                 SuccesResponse(token, HttpStatus.OK)
             } else {
                 updateTokenResult
             }
         } catch (e: Exception) {
+            logService.setLog(Gson().toJson(loginRequest),e.localizedMessage)
             ErrorResponse(e.localizedMessage, HttpStatus.NOT_ACCEPTABLE)
         }
     }
