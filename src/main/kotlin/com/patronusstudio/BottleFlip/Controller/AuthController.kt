@@ -51,7 +51,16 @@ class AuthController {
             }
         } catch (e: Exception) {
             logService.setLog(Gson().toJson(loginRequest),e.localizedMessage)
-            ErrorResponse(e.localizedMessage, HttpStatus.NOT_ACCEPTABLE)
+            val message = when (e.localizedMessage) {
+                "No user found" -> {
+                    "Kullanıcı kaydı bulunamadı."
+                }
+                "Bad credentials" -> {
+                    "Kullanıcı adı veya şifre hatalı."
+                }
+                else -> e.localizedMessage
+            }
+            ErrorResponse(message, HttpStatus.NOT_ACCEPTABLE)
         }
     }
 
