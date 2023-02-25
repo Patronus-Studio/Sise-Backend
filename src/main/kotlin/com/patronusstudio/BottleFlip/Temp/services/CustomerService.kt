@@ -105,18 +105,27 @@ class CustomerService {
         val districtName = districtService.getDistrictName(customerRequestModel.whichDistrinct)
         val airportName = airportService.getAirportName(customerRequestModel.whichAirport)
         val routeName = if (customerRequestModel.startDestination == "0") {
-            "From:$districtName To:$airportName"
-        } else "From:$airportName To:$districtName"
+            "From:$districtName <br>To:$airportName"
+        } else "From:$airportName <br>To:$districtName"
+        val messageList = mutableListOf<String>()
+        messageList.add(routeName)
+        messageList.add("Your Entried Phone: ${customerRequestModel.phoneNumber}")
+        if (customerRequestModel.numberOfCustomer != "0") messageList.add("Customer: ${customerRequestModel.numberOfCustomer}")
+        if (customerRequestModel.numberOfSuitcases != "0") messageList.add("Suitcase: ${customerRequestModel.numberOfSuitcases}")
+        if (customerRequestModel.numberOfChildSeats != "0") messageList.add("Child Seats: ${customerRequestModel.numberOfChildSeats}")
         val title = "You’re booked! Pack your bags – see you on ${customerRequestModel.boardingDate}"
-        val message =
-            "Hi ${customerRequestModel.nameSurname},\n" +
-                    "\n" +
+        var message =
+            "Hi ${customerRequestModel.nameSurname},<br>" +
                     "It’s confirmed, we’ll see you on ${customerRequestModel.boardingDate}! Thank you for booking with us." +
-                    "You’ll find details of your reservation details enclosed below. We’ll contact you soon via whatsapp.\n" +
-                    "\n" +
-                    "If you need to get in touch, you can email or phone us directly. We look forward to welcoming you!\n" +
-                    "\n" +
-                    "Thanks again."
+                    "You’ll find details of your reservation details enclosed below. We’ll contact you soon via whatsapp.<br>" +
+                    "<br>"
+        messageList.forEach {
+            message += "<br>$it"
+        }
+        message += "<br>If you need to get in touch, you can email or phone us directly. We look forward to welcoming you!<br>" +
+                "<br>" +
+                "Thanks again.<br><br>" +
+                "<a href=https://wa.me/905537645868>Contact US</a>"
         val emailDetails = EmailDetails().apply {
             this.recipient = customerRequestModel.email
             this.msgBody = message

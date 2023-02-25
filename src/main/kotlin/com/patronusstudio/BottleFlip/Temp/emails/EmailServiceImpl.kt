@@ -3,12 +3,12 @@ package com.patronusstudio.BottleFlip.Temp.emails
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.FileSystemResource
-import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import java.io.File
 import javax.mail.MessagingException
+import javax.mail.internet.MimeMessage
 
 
 //https://www.geeksforgeeks.org/spring-boot-sending-email-via-smtp/
@@ -22,12 +22,13 @@ class EmailServiceImpl : EmailService {
 
     override fun sendSimpleMail(details: EmailDetails): String? {
         return try {
-            val mailMessage = SimpleMailMessage()
-            mailMessage.setFrom(sender!!)
-            mailMessage.setTo(details.recipient)
-            mailMessage.setText(details.msgBody)
-            mailMessage.setSubject(details.subject)
-            javaMailSender!!.send(mailMessage)
+            val mimeMessage: MimeMessage = javaMailSender!!.createMimeMessage()
+            val helper: MimeMessageHelper = MimeMessageHelper(mimeMessage, "utf-8")
+            helper.setFrom(sender!!)
+            helper.setText(details.msgBody, true)
+            helper.setSubject(details.subject)
+            helper.setTo(details.recipient)
+            javaMailSender.send(mimeMessage)
             "Mail Sent Successfully..."
         } // Catch block to handle the exceptions
         catch (e: Exception) {
