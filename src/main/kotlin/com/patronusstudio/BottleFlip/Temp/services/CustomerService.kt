@@ -101,16 +101,22 @@ class CustomerService {
         return result
     }
 
-    fun sendEmailInformation(customerRequestModel: CustomerRequestModel){
+    fun sendEmailInformation(customerRequestModel: CustomerRequestModel) {
         val districtName = districtService.getDistrictName(customerRequestModel.whichDistrinct)
         val airportName = airportService.getAirportName(customerRequestModel.whichAirport)
         val routeName = if (customerRequestModel.startDestination == "0") {
             "From:$districtName To:$airportName"
         } else "From:$airportName To:$districtName"
-        val title = "Reservation Info"
+        val title = "You’re booked! Pack your bags – see you on ${customerRequestModel.boardingDate}"
         val message =
-            "Hello ${customerRequestModel.nameSurname},\n\nWe created your reservation where $routeName.Your flight " +
-                    "flight number is:${customerRequestModel.flightNumber}.\n\nIf you have any problem, contact us.Thank you"
+            "Hi ${customerRequestModel.nameSurname},\n" +
+                    "\n" +
+                    "It’s confirmed, we’ll see you on ${customerRequestModel.boardingDate}! Thank you for booking with us." +
+                    "You’ll find details of your reservation details enclosed below. We’ll contact you soon via whatsapp.\n" +
+                    "\n" +
+                    "If you need to get in touch, you can email or phone us directly. We look forward to welcoming you!\n" +
+                    "\n" +
+                    "Thanks again."
         val emailDetails = EmailDetails().apply {
             this.recipient = customerRequestModel.email
             this.msgBody = message
