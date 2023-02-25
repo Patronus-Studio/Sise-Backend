@@ -5,6 +5,8 @@ import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Model.ErrorResponse
 import com.patronusstudio.BottleFlip.Model.SuccesResponse
 import com.patronusstudio.BottleFlip.Repository.SqlRepo
+import com.patronusstudio.BottleFlip.Temp.emails.EmailDetails
+import com.patronusstudio.BottleFlip.Temp.emails.EmailService
 import com.patronusstudio.BottleFlip.Temp.models.CustomerRequestModel
 import com.patronusstudio.BottleFlip.Temp.models.toLocalDateTime
 import com.patronusstudio.BottleFlip.enums.SqlErrorType
@@ -23,6 +25,9 @@ class CustomerService {
 
     @Autowired
     private lateinit var districtService: DistrictService
+
+    @Autowired
+    private lateinit var emailService: EmailService
 
     fun getAllCustomers(): BaseResponse {
         val sql = "Select * From pk_customer"
@@ -90,9 +95,27 @@ class CustomerService {
                 "\"${customerRequestModel.whichAirport}\",\"${customerRequestModel.whichDistrinct}\",${customerRequestModel.carType})"
         val result = sqlRepo.setData(sql)
         if (result is BaseSealed.Succes) {
+            sendEmailInformation(customerRequestModel)
             result.data = HttpStatus.OK
         } else (result as BaseSealed.Error).sqlErrorType = SqlErrorType.NOT_ACCEPTABLE
         return result
     }
 
+    fun sendEmailInformation(customerRequestModel: CustomerRequestModel){
+        val districtName = districtService.getDistrictName(customerRequestModel.whichDistrinct)
+        val airportName = airportService.getAirportName(customerRequestModel.whichAirport)
+        val routeName = if (customerRequestModel.startDestination == "0") {
+            "From:$districtName To:$airportName"
+        } else "From:$airportName To:$districtName"
+        val title = "Reservation Info"
+        val message =
+            "Hello ${customerRequestModel.nameSurname},\n\nWe created your reservation where $routeName.Your flight " +
+                    "flight number is:${customerRequestModel.flightNumber}.\n\nIf you have any problem, contact us.Thank you"
+        val emailDetails = EmailDetails().apply {
+            this.recipient = customerRequestModel.email
+            this.msgBody = message
+            this.subject = title
+        }
+        emailService.sendSimpleMail(emailDetails)
+    }
 }
