@@ -117,7 +117,7 @@ class PackageService {
         val sql = "Select * From packages Where packageCategory = $packageCategory"
         val result = sqlRepo.getDataForListWithReturnList(sql, PackageModel::class)
         return if (result is BaseSealed.Succes) {
-            SuccesResponse(data = (result.data as List<PackageModel>), status = HttpStatus.OK, message = null)
+            SuccesResponse(data = (result.data as List<PackageModel>).parsePackageResponseModel(), status = HttpStatus.OK, message = null)
         } else {
             ErrorResponse("Paket bulunamadı", HttpStatus.NOT_ACCEPTABLE)
         }
