@@ -93,15 +93,15 @@ class CustomerService {
                 "\"${customerRequestModel.nameSurname}\",\"${customerRequestModel.numberOfChildSeats}\",\"${customerRequestModel.numberOfCustomer}\"," +
                 "\"${customerRequestModel.numberOfSuitcases}\",\"${customerRequestModel.phoneNumber}\",\"${customerRequestModel.startDestination}\"," +
                 "\"${customerRequestModel.whichAirport}\",\"${customerRequestModel.whichDistrinct}\",${customerRequestModel.carType})"
-        val result = sqlRepo.setData(sql)
+        val result = sqlRepo.setDataWithReturnPrimaryKey(sql)
         if (result is BaseSealed.Succes) {
-            sendEmailInformation(customerRequestModel)
+            sendEmailInformation(customerRequestModel, result.data as Long)
             result.data = HttpStatus.OK
         } else (result as BaseSealed.Error).sqlErrorType = SqlErrorType.NOT_ACCEPTABLE
         return result
     }
 
-    fun sendEmailInformation(customerRequestModel: CustomerRequestModel) {
+    fun sendEmailInformation(customerRequestModel: CustomerRequestModel, reservationId: Long) {
         val districtName = districtService.getDistrictName(customerRequestModel.whichDistrinct)
         val airportName = airportService.getAirportName(customerRequestModel.whichAirport)
         val routeName = if (customerRequestModel.startDestination == "0") {
@@ -122,10 +122,18 @@ class CustomerService {
         messageList.forEach {
             message += "<br>$it"
         }
+        val username = customerRequestModel.nameSurname.replace(" ","%20")
         message += "<br>If you need to get in touch, you can email or phone us directly. We look forward to welcoming you!<br>" +
                 "<br>" +
                 "Thanks again.<br><br>" +
-                "<a href=https://wa.me/905537645868>Contact US</a>"
+                "<a href=https://wa.me/905537645868?text=Hello,%20I'm%20$username%20and%20I%20will%20take%20a%20" +
+                "information%20for%20this%20reservation%20id:$reservationId>" +
+                "<img src=https://scontent.fist4-1.fna.fbcdn.net/v/t39.8562-6/302524815_3448899778679909_2843186333341006023_" +
+                "n.png?_nc_cat=104&ccb=1-7&_nc_sid=6825c5&_nc_ohc=FVbrY5Y40GkAX89olMD&_nc_ht=scontent.fist4-1.fna&oh=00_AfBQts" +
+                "nX0burv1-0suK6pCbnYOKn_m_A57D1gHjSjVo7VA&oe=6400C48F alt=Air Transfer Turkey! width=140 height=35/><br><br>" +
+                "</a>" +
+                "<img src=https://firebasestorage.googleapis.com/v0/b/sise-cevirmece-2-0.appspot.com/o/att.png?alt=media alt=Air Transfer Turkey! " +
+                "width=200 height=125/><br>"
         val emailDetails = EmailDetails().apply {
             this.recipient = customerRequestModel.email
             this.msgBody = message

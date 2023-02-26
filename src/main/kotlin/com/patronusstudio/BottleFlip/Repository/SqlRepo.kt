@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.mysql.jdbc.Statement
 import com.patronusstudio.BottleFlip.Base.BaseModel
 import com.patronusstudio.BottleFlip.Base.BaseSealed
 import com.patronusstudio.BottleFlip.Temp.models.CustomerModel
@@ -13,8 +14,11 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.BeanPropertyRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import java.lang.reflect.Type
+import java.sql.PreparedStatement
 import kotlin.reflect.KClass
 
 
@@ -94,4 +98,19 @@ class SqlRepo {
             BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
         }
     }
+
+    fun setDataWithReturnPrimaryKey(sqlQuery: String): BaseSealed {
+        return try {
+            val keyHolder: KeyHolder = GeneratedKeyHolder()
+            jdbcConnection.update({ connection ->
+                val ps: PreparedStatement = connection
+                    .prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)
+                ps
+            }, keyHolder)
+            BaseSealed.Succes(data = keyHolder.key)
+        } catch (e: DataAccessException) {
+            BaseSealed.Error(mapOf(Pair("error", e.localizedMessage)), SqlErrorType.DATA_ACCES_EXCEPTON)
+        }
+    }
+
 }
