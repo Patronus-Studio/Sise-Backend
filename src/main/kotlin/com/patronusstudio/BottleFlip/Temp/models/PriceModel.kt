@@ -14,3 +14,12 @@ data class PriceModelResponse(
     @JsonProperty("price")
     val price:Double
 ): BaseModel()
+
+data class PriceUpdateRequest(
+    @JsonProperty("airport_id")
+    val airport_id :Int,
+    @JsonProperty("ilce_id")
+    val ilce_id :Int,
+    @JsonProperty("price")
+    val price :Int,
+)
